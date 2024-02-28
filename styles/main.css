@@ -1,0 +1,89 @@
+/* Store link to the font */
+@font-face {
+    font-family: roboto;
+    src: url(fonts/Roboto-Medium.ttf);
+}
+
+
+/* Preset colors*/
+:root {
+    --pikitablue_dark:#0063C7;
+    --pikitablue_mid:#0099FF;
+    --pikitablue_light:#00CCFF;
+
+    --pikita_blueblack:#000029;
+    --pikita_yellow:#ECFF00;
+    --pikita_cyan:#00ffff;
+}
+
+/* Background and preset color definition */
+body {
+
+    /* Background */
+    background: #000029;
+    background: linear-gradient(0deg,
+        var(--pikitablue_dark) -50%,
+        var(--pikita_blueblack) 60%
+    );
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+
+
+    /* Text settings */
+    font-family:roboto;
+    font-size:2em;
+    color: white;
+}
+
+/* LINKS */
+
+a {
+    text-decoration: underline;
+}
+/* Visited links do not change color*/
+a:link, a:visited {
+    color: var(--pikitablue_mid);
+}
+
+a:hover {    
+    color: var(--pikitablue_light);
+}
+
+a:active {
+    color: var(--pikitablue_dark)
+}
+
+/* */
+
+form {
+}
+input {
+    padding: 0.5em 1em;
+    font-size:0.8em;
+    border-radius: 0.8em;
+    border: 0.2em solid gray;
+    font-family: roboto;
+}
+
+input[type=text] {
+    outline: none; /* Removes the ugly black outline.*/
+    color: rgb(255, 255, 255);
+    background:none;
+    
+}
+
+input[type=text]:focus {
+    border-color: var(--pikitablue_light);
+}
+
+
+input[type=submit] {
+    color: inherit;
+    cursor: pointer;
+    background-color: var(--pikitablue_mid);
+}
+
+::placeholder {
+    color: rgb(116, 164, 226);
+}
