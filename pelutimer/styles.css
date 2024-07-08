@@ -1,3 +1,12 @@
+/* Color palette*/
+:root {
+    --light-text: rgb(0,0,0);
+    --dark-text: rgb(255, 255, 255);
+
+    --base-fill: rgb(62, 120, 255);
+    --hover-fill: rgb(40, 105, 255);
+    --active-fill: rgb(21, 91, 255);
+}
 body {
     font-family: Calibri;
     font-size:20px;
@@ -56,8 +65,20 @@ body {
     font-size: x-large;
 }
 
-.timer-toggle, .timer-remove, #add-timer, #reset-data {
+button {
+    color:var(--dark-text);
+    font-weight: bold;
     padding: 5px 10px;
+    background-color: var(--base-fill);
+    border-radius: 8px;
+    border-color: var(--light-text);
+}
+
+button:hover {
+    background-color: var(--hover-fill);
+}
+button:active {
+    background: var(--active-fill);
 }
 
 .timer-remove {
