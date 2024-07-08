@@ -1,0 +1,55 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+#app {
+    width: 80%;
+    max-width: 600px;
+    margin-top: 20px;
+}
+
+#timers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.timer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.timer-name {
+    flex: 1;
+}
+
+.timer-display {
+    width: 100px;
+    text-align: center;
+}
+
+.timer-toggle, .timer-remove, #add-timer {
+    padding: 5px 10px;
+}
+
+.timer-remove {
+    display: none;
+}
+
+#add-timer {
+    margin-top: 10px;
+}
+
+h2 {
+    margin-top: 20px;
+}
+
+#ratios {
+    margin-top: 10px;
+}
