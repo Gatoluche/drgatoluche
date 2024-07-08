@@ -1,15 +1,78 @@
+// Array of all timers.
 let timers = [
     { name: 'Timer 1', time: 0, interval: null },
     { name: 'Timer 2', time: 0, interval: null }
 ];
+// The timer that is currently running.
 let runningTimer = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("hello world!");
     loadTimersFromStorage();
     loadTimers();
     document.getElementById('add-timer').addEventListener('click', addTimer);
     document.getElementById('reset-data').addEventListener('click', resetData);
+    document.getElementById('download').addEventListener('click', download);
+    // Embedded file input.
+    document.getElementById('import').addEventListener('click', function () {
+    document.getElementById('fileInput').click()});
+    document.getElementById('fileInput').addEventListener('change', loadTimersFromUpload);
 });
+
+function download() {
+    // Stringify timer data
+    const timerData = JSON.stringify(timers);
+    // Create a blob with the JSON string
+    const blob = new Blob([timerData], { type: 'application/json' });
+
+    // Create an anchor element and set the download attribute
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'pelutimer.json';
+
+    // Append the link to the body
+    document.body.appendChild(link);
+
+    // Programmatically click the link to trigger the download
+    link.click();
+
+    // Remove the link from the document
+    document.body.removeChild(link);
+}
+
+function loadTimersFromStorage() {
+    const storedTimers = localStorage.getItem('timers');
+    if (storedTimers) {
+        timers = JSON.parse(storedTimers);
+        timers.forEach(timer => timer.interval = null);
+    }
+}
+
+function loadTimersFromUpload(event) {
+    const file = event.target.files[0];
+    
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const storedTimers = JSON.parse(e.target.result);
+                processTimers(storedTimers);
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+            }
+        };
+        reader.readAsText(file);
+        if (reader) {
+            timers = JSON.parse(reader);
+            timers.forEach(timer => timer.interval = null);
+        }
+    }
+}
+
+function saveTimersToStorage() {
+    localStorage.setItem('timers', JSON.stringify(timers));
+}
 
 function loadTimers() {
     const timersContainer = document.getElementById('timers');
@@ -162,17 +225,9 @@ function updateRatios() {
     });
 }
 
-function saveTimersToStorage() {
-    localStorage.setItem('timers', JSON.stringify(timers));
-}
 
-function loadTimersFromStorage() {
-    const storedTimers = localStorage.getItem('timers');
-    if (storedTimers) {
-        timers = JSON.parse(storedTimers);
-        timers.forEach(timer => timer.interval = null);
-    }
-}
+
+
 
 function resetData() {
     localStorage.removeItem('timers');
