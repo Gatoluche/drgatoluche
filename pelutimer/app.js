@@ -7,66 +7,61 @@ let timers = [
 let runningTimer = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("hello world!");
     loadTimersFromStorage();
     loadTimers();
+
     document.getElementById('add-timer').addEventListener('click', addTimer);
     document.getElementById('reset-data').addEventListener('click', resetData);
-    document.getElementById('download').addEventListener('click', download);
-    // Embedded file input.
-    document.getElementById('import').addEventListener('click', function () {
-    document.getElementById('fileInput').click()});
-    document.getElementById('fileInput').addEventListener('change', loadTimersFromUpload);
+
+    document.getElementById('export-data').addEventListener('click', exportData);
+    document.getElementById('import-data').addEventListener('click', importData);
 });
 
-function download() {
-    // Stringify timer data
-    const timerData = JSON.stringify(timers);
-    // Create a blob with the JSON string
-    const blob = new Blob([timerData], { type: 'application/json' });
-
-    // Create an anchor element and set the download attribute
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'pelutimer.json';
-
-    // Append the link to the body
-    document.body.appendChild(link);
-
-    // Programmatically click the link to trigger the download
-    link.click();
-
-    // Remove the link from the document
-    document.body.removeChild(link);
-}
-
-function loadTimersFromStorage() {
-    const storedTimers = localStorage.getItem('timers');
-    if (storedTimers) {
-        timers = JSON.parse(storedTimers);
-        timers.forEach(timer => timer.interval = null);
+function importData() {
+    const timerInput = document.getElementById('inputJSON').value;
+    
+    if (timerInput) {
+        console.log(timerInput);
+        importTimers(timerInput);
+    } else {
+        console.error('No timers input provided.');
     }
 }
 
-function loadTimersFromUpload(event) {
-    const file = event.target.files[0];
-    
-    
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            try {
-                const storedTimers = JSON.parse(e.target.result);
-                processTimers(storedTimers);
-            } catch (error) {
-                console.error('Error parsing JSON:', error);
-            }
-        };
-        reader.readAsText(file);
-        if (reader) {
-            timers = JSON.parse(reader);
-            timers.forEach(timer => timer.interval = null);
-        }
+function exportData() {
+    // Stringify timer data
+    const timerData = JSON.stringify(timers);
+    // Set the value of the input field 'inputJSON' to the JSON string
+    document.getElementById('inputJSON').value = timerData;
+}
+
+
+// Load from input field to migrate between devices
+function loadTimersFromInput() {
+    console.log("alive");
+    console.log(timerInput);
+    const timerInput = document.getElementById('inputJSON').value;
+    if (timerInput) {
+        importTimers(timerInput);
+        loadTimers();
+        updateRatios();
+        saveTimersToStorage();
+    } else {
+        console.error('No timers input provided.');
+    }
+}
+
+// Separated import function to be usable with both import methods.
+function importTimers(inputTimers) {
+    timers = JSON.parse(inputTimers);
+    timers.forEach(timer => timer.interval = null);
+}
+
+// Load from local storage to survive refreshing
+function loadTimersFromStorage() {
+    const storedTimers = localStorage.getItem('timers');
+    if (storedTimers) {
+        importTimers(storedTimers)
     }
 }
 
