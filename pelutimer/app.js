@@ -171,7 +171,7 @@ function toggleTimer(index) {
         let currentTime = Date.now();
 
         let elapsedTime = Math.floor((currentTime - timers[runningTimer].startTime) / 1000);
-        timers[runningTimer].time += elapsedTime - timers[runningTimer].initialTime;
+        timers[runningTimer].time = timers[runningTimer].initialTime + elapsedTime;
         // Print current time in readable format
         console.log("Stopped " + timers[runningTimer].name +
             " at " + new Date(currentTime).toLocaleString() +
