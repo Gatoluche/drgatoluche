@@ -3,6 +3,9 @@
     --light-text: rgb(0,0,0);
     --dark-text: rgb(255, 255, 255);
 
+    --light-background: rgb(255,255,255);
+    --black-background: rgb(25,25,25);
+
     --base-fill: rgb(62, 120, 255);
     --hover-fill: rgb(40, 105, 255);
     --active-fill: rgb(21, 91, 255);
@@ -15,6 +18,9 @@ body {
     align-items: center;
     margin: 0;
     padding: 0;
+
+    background-color: var(--black-background);
+    color: var(--dark-text)
 }
 
 #app {
@@ -42,8 +48,6 @@ body {
     gap: 10px;
 }
 
-
-
 .timer-name {
     flex: 1;
     font-size: larger;
@@ -63,6 +67,11 @@ body {
     border:0;
     font-family: calibri;
     font-size: x-large;
+}
+
+input {
+    background: none;
+    color:inherit;
 }
 
 button {
