@@ -129,23 +129,28 @@ function startTimer(index) {
     console.log("Started " + timers[runningTimer].name +
         " at " + new Date(startTime).toLocaleString());
 
-    // Start running.
+    // Start interval.
+    // !!! This is the code that runs every second.
     timers[index].interval = setInterval(() => {
         timers[index].time += 1;
+        loadTimers();
+        updateRatios();
+        // Saving every second isn't optimal.
+        // TBD changing it to once a minute later, at least.
+        saveLocal();
     }, 1000);
 }
 
-
 function stopTimer() {
+
     // Find the timer's interval and stop it.
     clearInterval(timers[runningTimer].interval);
-    // Store that the timer no longer has an interval.
     timers[runningTimer].interval = null;
 
-    // Account for tab snoozing:
+    // To account for tab snoozing,
+    // Store current time
+    let currentTime = Date.now();
     
-    // Calculate elapsed time since start and update timer's time
-    let currentTime = Date.now();   // Store current time.
     // Calculate time since the running timer started:
     // now - then = time since then
     let elapsedTime = Math.floor((currentTime - startTime) / 1000);
@@ -159,6 +164,9 @@ function stopTimer() {
     startTime = null;
     startValue = 0;
 }
+
+//  PAGE LOADING: Making the HTML and connecting it to the rest.
+// --- --- --- --- ---
 
 // Dynamically generate each timer on screen
 function loadTimers() {
