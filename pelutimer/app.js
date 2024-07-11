@@ -1,40 +1,81 @@
+// SETUP
+// --- --- --- --- ---
+
 // Array of all timers.
 let timers = [
+    // Initialized with minimum timers for core functionality to make sense.
     { name: 'Timer 1', time: 0, interval: null },
     { name: 'Timer 2', time: 0, interval: null }
 ];
+
 // The timer that is currently running.
 let runningTimer = null;
 
+// Start time and value of the timer at that point.
+let startTime = null;
+let startValue = null;
+
+// Event listeners - run initial tasks and connect buttons to functions
 document.addEventListener('DOMContentLoaded', () => {
-    loadTimersFromStorage();
+    loadLocal();
     loadTimers();
-    // Main functionaltiy
+    // Main functionality
     document.getElementById('add-timer').addEventListener('click', addTimer);
     document.getElementById('reset-data').addEventListener('click', resetData);
     // Data migration
-    document.getElementById('export-data').addEventListener('click', exportData);
-    document.getElementById('import-data').addEventListener('click', importData);
+    document.getElementById('export-data').addEventListener('click', exportJSON);
+    document.getElementById('import-data').addEventListener('click', importJSON);
     // Dark/light mode
     document.getElementById('toggle-theme').addEventListener('click', toggleTheme);
+    // Record feature (TBD)
+    //document.getElementById('end-day').addEventListener('click', endDay);
 });
 
-function toggleTheme() {
-    document.body.classList.toggle('dark');
+// SAVING/LOADING: Putting data in/out of local storage.
+// --- --- --- --- ---
+
+    // PROCESSING: Putting the data back on screen.
+    // --- ---
+
+// Read JSON data into timers.
+function readJSON(input) {
+    timers = JSON.parse(input);
+    timers.forEach(timer => timer.interval = null);
 }
 
-function importData() {
+    // LOCAL STORAGE
+    // --- ---
+
+// Load data from local storage.
+function loadLocal() {
+    const storedTimers = localStorage.getItem('timers');
+    if (storedTimers) {
+        readJSON(storedTimers);
+    }
+}
+
+// Save data to local storage.
+function saveLocal() {
+    localStorage.setItem('timers', JSON.stringify(timers));
+}
+
+    // JSON input/output: Manual migration feature
+    // --- ---
+
+// Read data from JSON field.
+function importJSON() {
     const timerInput = document.getElementById('inputJSON').value;
     
     if (timerInput) {
         console.log(timerInput);
-        importTimers(timerInput);
+        readJSON(timerInput);
     } else {
         console.error('No timers input provided.');
     }
 }
 
-function exportData() {
+// Output data to JSON field.
+function exportJSON() {
     // Stringify timer data
     const timerData = JSON.stringify(timers);
     // Set the value of the input field 'inputJSON' to the JSON string
@@ -42,46 +83,143 @@ function exportData() {
 }
 
 
-// Load from input field to migrate between devices
-function loadTimersFromInput() {
-    console.log("alive");
-    console.log(timerInput);
-    const timerInput = document.getElementById('inputJSON').value;
-    if (timerInput) {
-        importTimers(timerInput);
-        loadTimers();
-        updateRatios();
-        saveTimersToStorage();
-    } else {
-        console.error('No timers input provided.');
+// CORE: Main timer functionality
+// --- --- --- --- ---
+
+
+    // START/STOP: Handles pausing and resuming the timers.
+    // --- --- ---
+
+// Handle the logic of the pause/resume button.
+function toggleTimer(index) {
+
+    // Do we start a timer?
+    var start = true;
+
+    // Check if a timer is running
+    if (runningTimer !== null) {
+        // Stop said timer.
+        stopTimer()
+        // Was the button pressed a "stop" one?
+        if (runningTimer === index) {
+            // If so, no timers will run.
+            runningTimer = null;
+            start = false;
+        }
     }
+    // Start a new timer
+    start ? startTimer(index) : null;
+    
+    // Update timers and save data.
+    loadTimers();
+    saveLocal();
 }
 
-// Separated import function to be usable with both import methods.
-function importTimers(inputTimers) {
-    timers = JSON.parse(inputTimers);
-    timers.forEach(timer => timer.interval = null);
+
+function startTimer(index) {
+
+    // Store timer's status at startup.
+    startTime = Date.now();
+    startValue = timers[index].time;
+
+    // This is now the running timer.
+    runningTimer = index;
+
+    // Log start time.
+    console.log("Started " + timers[runningTimer].name +
+        " at " + new Date(startTime).toLocaleString());
+
+    // Start running.
+    timers[index].interval = setInterval(() => {
+        timers[index].time += 1;
+    }, 1000);
 }
 
-// Load from local storage to survive refreshing
-function loadTimersFromStorage() {
-    const storedTimers = localStorage.getItem('timers');
-    if (storedTimers) {
-        importTimers(storedTimers)
-    }
+
+function stopTimer() {
+    // Find the timer's interval and stop it.
+    clearInterval(timers[runningTimer].interval);
+    // Store that the timer no longer has an interval.
+    timers[runningTimer].interval = null;
+
+    // Account for tab snoozing:
+    
+    // Calculate elapsed time since start and update timer's time
+    let currentTime = Date.now();   // Store current time.
+    // Calculate time since the running timer started:
+    // now - then = time since then
+    let elapsedTime = Math.floor((currentTime - startTime) / 1000);
+    
+    timers[runningTimer].time = startValue + elapsedTime;
+    // Print current time in readable format
+    console.log("Stopped " + timers[runningTimer].name +
+        " at " + new Date(currentTime).toLocaleString() +
+        ". " + elapsedTime + " seconds have passed."); 
+    
+    startTime = null;
+    startValue = 0;
 }
 
-function saveTimersToStorage() {
-    localStorage.setItem('timers', JSON.stringify(timers));
-}
-
+// Dynamically generate each timer on screen
 function loadTimers() {
     const timersContainer = document.getElementById('timers');
     timersContainer.innerHTML = '';
+    // For each timer present,
     timers.forEach((timer, index) => {
+        // Generate an element and place it in the container.
         const timerElement = createTimerElement(timer, index);
         timersContainer.appendChild(timerElement);
     });
+    updateRatios();
+}
+
+
+function addTimer() {
+    timers.push({ name: `Timer ${timers.length + 1}`, time: 0, interval: null });
+    loadTimers();
+    saveLocal();
+}
+
+function removeTimer(index) {
+    if (timers[index].interval) {
+        clearInterval(timers[index].interval);
+    }
+    timers.splice(index, 1);
+    if (runningTimer === index) {
+        runningTimer = null;
+    } else if (runningTimer > index) {
+        runningTimer -= 1;
+    }
+    loadTimers();
+    updateRatios();
+    saveLocal();
+}
+
+function updateRatios() {
+    timers.forEach((timer, index) => {
+        const ratiosContainer = document.getElementById(`ratios-${index}`);
+        ratiosContainer.innerHTML = '';
+        timers.forEach((otherTimer, otherIndex) => {
+            if (index !== otherIndex) {
+                const ratioElement = document.createElement('div');
+                const ratio = timer.time / otherTimer.time || 0;
+                const roundedRatio = Math.round(ratio / 0.25) * 0.25;
+                ratioElement.innerHTML = `<strong>${roundedRatio.toFixed(2)}</strong>x ${otherTimer.name}`;
+                ratiosContainer.appendChild(ratioElement);
+            }
+        });
+    });
+}
+
+
+function resetData() {
+    localStorage.removeItem('timers');
+    timers = [
+        { name: 'Timer 1', time: 0, interval: null },
+        { name: 'Timer 2', time: 0, interval: null }
+    ];
+    runningTimer = null;
+    loadTimers();
     updateRatios();
 }
 
@@ -98,7 +236,7 @@ function createTimerElement(timer, index) {
     nameInput.value = timer.name;
     nameInput.addEventListener('input', (e) => {
         timer.name = e.target.value;
-        saveTimersToStorage();
+        saveLocal();
     });
 
     const display = document.createElement('div');
@@ -111,7 +249,7 @@ function createTimerElement(timer, index) {
     hoursInput.addEventListener('change', () => {
         timer.time = (parseInt(hoursInput.value, 10) * 3600) + (parseInt(minutesInput.value, 10) * 60) + parseInt(secondsInput.value, 10);
         updateRatios();
-        saveTimersToStorage();
+        saveLocal();
     });
 
     const minutesInput = document.createElement('input');
@@ -121,7 +259,7 @@ function createTimerElement(timer, index) {
     minutesInput.addEventListener('change', () => {
         timer.time = (parseInt(hoursInput.value, 10) * 3600) + (parseInt(minutesInput.value, 10) * 60) + parseInt(secondsInput.value, 10);
         updateRatios();
-        saveTimersToStorage();
+        saveLocal();
     });
 
     const secondsInput = document.createElement('input');
@@ -131,7 +269,7 @@ function createTimerElement(timer, index) {
     secondsInput.addEventListener('change', () => {
         timer.time = (parseInt(hoursInput.value, 10) * 3600) + (parseInt(minutesInput.value, 10) * 60) + parseInt(secondsInput.value, 10);
         updateRatios();
-        saveTimersToStorage();
+        saveLocal();
     });
 
     display.appendChild(hoursInput);
@@ -167,99 +305,9 @@ function createTimerElement(timer, index) {
     return timerElement;
 }
 
-function toggleTimer(index) {
-    // If there's a timer running, STOP the timer.
-    if (runningTimer !== null) {
-        clearInterval(timers[runningTimer].interval);
-        timers[runningTimer].interval = null;
-        // Calculate elapsed time since start and update timer's time
-        // Fetch date
-        let currentTime = Date.now();
+// MISCELLANEOUS: Cosmetic, unimportant stuff.
+// --- --- --- --- ---
 
-        let elapsedTime = Math.floor((currentTime - timers[runningTimer].startTime) / 1000);
-        timers[runningTimer].time = timers[runningTimer].initialTime + elapsedTime;
-        // Print current time in readable format
-        console.log("Stopped " + timers[runningTimer].name +
-            " at " + new Date(currentTime).toLocaleString() +
-            ". " + elapsedTime + " seconds have passed."); 
-        
-        timers[runningTimer].startTime = null;
-        timers[runningTimer].initialTime = 0;
-        if (runningTimer === index) {
-            runningTimer = null;
-            loadTimers();
-            saveTimersToStorage();
-            return; // Break out.
-        }
-    }
-    
-    // START the timer.
-    runningTimer = index;
-    // Store start time (of day) and timer time.
-    timers[index].startTime = Date.now(); // Record start time
-    timers[index].initialTime = timers[index].time; // Store initial time when starting
-    // Log start time.
-    console.log("Started " + timers[runningTimer].name + " at " + new Date(timers[index].startTime).toLocaleString()); // Print start time in readable format
-    // Start running.
-    timers[index].interval = setInterval(() => {
-        timers[index].time += 1;
-        loadTimers();
-        updateRatios();
-        saveTimersToStorage();
-    }, 1000);
-    
-    loadTimers();
-    saveTimersToStorage();
-}
-
-function addTimer() {
-    timers.push({ name: `Timer ${timers.length + 1}`, time: 0, interval: null });
-    loadTimers();
-    saveTimersToStorage();
-}
-
-function removeTimer(index) {
-    if (timers[index].interval) {
-        clearInterval(timers[index].interval);
-    }
-    timers.splice(index, 1);
-    if (runningTimer === index) {
-        runningTimer = null;
-    } else if (runningTimer > index) {
-        runningTimer -= 1;
-    }
-    loadTimers();
-    updateRatios();
-    saveTimersToStorage();
-}
-
-function updateRatios() {
-    timers.forEach((timer, index) => {
-        const ratiosContainer = document.getElementById(`ratios-${index}`);
-        ratiosContainer.innerHTML = '';
-        timers.forEach((otherTimer, otherIndex) => {
-            if (index !== otherIndex) {
-                const ratioElement = document.createElement('div');
-                const ratio = timer.time / otherTimer.time || 0;
-                const roundedRatio = Math.round(ratio / 0.25) * 0.25;
-                ratioElement.innerHTML = `<strong>${roundedRatio.toFixed(2)}</strong>x ${otherTimer.name}`;
-                ratiosContainer.appendChild(ratioElement);
-            }
-        });
-    });
-}
-
-
-
-
-
-function resetData() {
-    localStorage.removeItem('timers');
-    timers = [
-        { name: 'Timer 1', time: 0, interval: null },
-        { name: 'Timer 2', time: 0, interval: null }
-    ];
-    runningTimer = null;
-    loadTimers();
-    updateRatios();
+function toggleTheme() {
+    document.body.classList.toggle('dark');
 }
