@@ -162,23 +162,46 @@ function createTimerElement(timer, index) {
 }
 
 function toggleTimer(index) {
+    // If there's a timer running, STOP the timer.
     if (runningTimer !== null) {
         clearInterval(timers[runningTimer].interval);
         timers[runningTimer].interval = null;
+        // Calculate elapsed time since start and update timer's time
+        // Fetch date
+        let currentTime = Date.now();
+
+        let elapsedTime = Math.floor((currentTime - timers[runningTimer].startTime) / 1000);
+        timers[runningTimer].time = timers[runningTimer].initialTime + elapsedTime;
+        // Print current time in readable format
+        console.log("Stopped " + timers[runningTimer].name +
+            " at " + new Date(currentTime).toLocaleString() +
+            ". " + elapsedTime + " seconds have passed."); 
+        
+        timers[runningTimer].startTime = null;
+        timers[runningTimer].initialTime = 0;
         if (runningTimer === index) {
             runningTimer = null;
             loadTimers();
             saveTimersToStorage();
-            return;
+            return; // Break out.
         }
     }
+    
+    // START the timer.
     runningTimer = index;
+    // Store start time (of day) and timer time.
+    timers[index].startTime = Date.now(); // Record start time
+    timers[index].initialTime = timers[index].time; // Store initial time when starting
+    // Log start time.
+    console.log("Started " + timers[runningTimer].name + " at " + new Date(timers[index].startTime).toLocaleString()); // Print start time in readable format
+    // Start running.
     timers[index].interval = setInterval(() => {
         timers[index].time += 1;
         loadTimers();
         updateRatios();
         saveTimersToStorage();
     }, 1000);
+    
     loadTimers();
     saveTimersToStorage();
 }
