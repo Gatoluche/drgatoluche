@@ -9,13 +9,19 @@ let runningTimer = null;
 document.addEventListener('DOMContentLoaded', () => {
     loadTimersFromStorage();
     loadTimers();
-
+    // Main functionaltiy
     document.getElementById('add-timer').addEventListener('click', addTimer);
     document.getElementById('reset-data').addEventListener('click', resetData);
-
+    // Data migration
     document.getElementById('export-data').addEventListener('click', exportData);
     document.getElementById('import-data').addEventListener('click', importData);
+    // Dark/light mode
+    document.getElementById('toggle-theme').addEventListener('click', toggleTheme);
 });
+
+function toggleTheme() {
+    document.body.classList.toggle('dark');
+}
 
 function importData() {
     const timerInput = document.getElementById('inputJSON').value;
