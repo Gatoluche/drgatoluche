@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dark/light mode
     document.getElementById('toggle-theme').addEventListener('click', toggleTheme);
     // Record feature (TBD)
-    //document.getElementById('end-day').addEventListener('click', endDay);
+    document.getElementById('end-day').addEventListener('click', endDay);
 });
 
 // SAVING/LOADING: Putting data in/out of local storage.
@@ -81,7 +81,6 @@ function exportJSON() {
     // Set the value of the input field 'inputJSON' to the JSON string
     document.getElementById('inputJSON').value = timerData;
 }
-
 
 // CORE: Main timer functionality
 // --- --- --- --- ---
@@ -163,6 +162,27 @@ function stopTimer() {
     
     startTime = null;
     startValue = 0;
+}
+
+// RECORDS: Store prior days' statistics
+// --- --- --- --- ---
+
+function endDay() {
+    // TBD: Store the data for reference
+    // Stop any running timer
+    if (runningTimer !== null) {
+        stopTimer();
+    }
+
+    // Set all timers to zero
+    timers.forEach(timer => {
+        timer.time = 0;
+    });
+
+    // Update the UI and save the reset data to local storage
+    loadTimers();
+    saveLocal();
+
 }
 
 //  PAGE LOADING: Making the HTML and connecting it to the rest.
