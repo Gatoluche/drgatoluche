@@ -55,4 +55,20 @@ function submit_to_mailing_list ($name, $email) {
     // Execute query
     $stmt->execute();
 }
+
+function record_code_entry ($input) {
+
+    // Connect to static database
+    $sql_conn = sql_connect();
+
+    // Prepare query statement
+    $stmt = $sql_conn->prepare(
+        "INSERT INTO Codes (Code, IP) VALUES (?,?)"
+    );
+
+    // Bind parameters to query (+ user IP)
+    $stmt->bind_param("ss", $input, $_SERVER['REMOTE_ADDR']);
+    // Execute query
+    $stmt->execute();
+}
 ?>
