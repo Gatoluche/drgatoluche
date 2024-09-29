@@ -6,7 +6,8 @@ const contentWrapper = document.querySelector(".content-wrapper");
 
 // Code-to-URL mapping
 const codeMap = {
-    "nano": "nano.html" // Add more codes and URLs here
+    "nano": "nano.html", // Add more codes and URLs here
+    "life": "life.html"
 };
 
 // Function to handle code submission
