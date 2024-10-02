@@ -9,6 +9,8 @@ body {
     background: url('../pictures/computer-background.png') no-repeat center center fixed; /* Your image URL */
     background-size: auto; /* Ensure the background covers the entire page */
     position: relative;
+    min-height: 100vh; /* Ensure the body is at least the height of the viewport */
+
 }
 
 /* Add a transparent overlay to make the background appear semi-transparent */
@@ -19,6 +21,7 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
+    height:100%;
     background: rgba(1, 9, 41, 0.84); /* Dark overlay with slight transparency */
     z-index: -1;
     backdrop-filter: blur(10px); /* Apply the blur effect */
