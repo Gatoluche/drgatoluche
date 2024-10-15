@@ -1,0 +1,15 @@
+
+
+.poem {
+    text-align: center;
+    margin-left: 30%;
+    margin-right: 30%;
+    font-size: 150%;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .poem {
+        margin: 0; /* Adjust margin to fit well between columns */
+    }
+}
