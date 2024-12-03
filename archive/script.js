@@ -8,7 +8,8 @@ const contentWrapper = document.querySelector(".content-wrapper");
 const codeMap = {
     "nano": "nano.html", // Add more codes and URLs here
     "life": "life.html",
-    "human": "human.html"
+    "human": "human.html",
+    "fusion": "fusion.html"
 };
 
 // Function to handle code submission
