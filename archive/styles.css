@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #131313;
-    color: #d8d9ff;
+    color: #e1e2ff;
     margin: 0;
     padding: 20px;
     text-shadow: 0 0 2px #819eff, 0 0 4px #5059ff;
@@ -12,6 +12,12 @@ body {
     min-height: 100vh; /* Ensure the body is at least the height of the viewport */
 
 }
+
+/* Make bold letters white for emphasis.*/
+strong {
+    color: rgb(248, 251, 255);
+}
+
 
 /* Add a transparent overlay to make the background appear semi-transparent */
 body::before {
@@ -28,6 +34,7 @@ body::before {
 }
 
 h1, h2 {
+    color: #e7e8ff;
     text-shadow: 0 0 8px #4d79ff, 0 0 6px #aabfff, 0 0 16px #aabfff;
 }
 
