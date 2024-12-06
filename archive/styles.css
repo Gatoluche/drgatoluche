@@ -23,6 +23,16 @@ em {
     color: #cccdff;
 }
 
+/* Make the numbers in numbered lists have white bold letters too */
+ol li{
+    margin-bottom: 0.5em; /* Spacing between list items */
+}
+
+ol li::marker {
+    font-weight:bold;
+    color: rgb(248, 251, 255);
+}
+
 /* Add a transparent overlay to make the background appear semi-transparent */
 body::before {
     content: '';
