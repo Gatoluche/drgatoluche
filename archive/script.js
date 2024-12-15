@@ -18,14 +18,14 @@ function handleSubmit() {
 
     if (codeMap[inputCode]) {
         // Code found - redirect to the mapped URL
-        message.textContent = "Authorization successful!";
+        message.textContent = "Contraseña reconocida.";
         message.style.color = "#4dff4d"; // Success green color
         setTimeout(() => {
             window.location.href = codeMap[inputCode]; // Redirect to the mapped URL
         }, 1000); // Redirect after 1 second
     } else {
         // Incorrect code - scary effect
-        message.textContent = "Incorrect code!";
+        message.textContent = "Contraseña incorrecta.";
         message.style.color = "#ff4d4d"; // Error red color
 
         // Shake effect
