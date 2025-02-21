@@ -35,6 +35,15 @@
     <div>
         <input type="text" id="inputJSON" placeholder="Paste timers' JSON here">
     </div>
+    <div id="transfer-dialog" class="transfer-dialog">
+        <h3>Transfer Time</h3>
+        <label for="transfer-amount">Amount (seconds):</label>
+        <input type="number" id="transfer-amount" min="0">
+        <label for="transfer-target">Target Timer:</label>
+        <select id="transfer-target"></select>
+        <button id="transfer-confirm">Transfer</button>
+        <button id="transfer-cancel">Cancel</button>
+    </div>
     <script src="app.js"></script>
     <h3>What is this?</h3>
 </body>

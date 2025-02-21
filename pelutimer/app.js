@@ -15,6 +15,8 @@ let runningTimer = null;
 let startTime = null;
 let startValue = null;
 
+let transferSourceIndex = null;
+
 // Event listeners - run initial tasks and connect buttons to functions
 document.addEventListener('DOMContentLoaded', () => {
     loadLocal();
@@ -29,6 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('toggle-theme').addEventListener('click', toggleTheme);
     // Record feature (TBD)
     document.getElementById('end-day').addEventListener('click', endDay);
+    document.getElementById('transfer-confirm').addEventListener('click', confirmTransfer);
+    document.getElementById('transfer-cancel').addEventListener('click', closeTransferDialog);
 });
 
 // SAVING/LOADING: Putting data in/out of local storage.
@@ -318,6 +322,11 @@ function createTimerElement(timer, index) {
     removeButton.style.display = timers.length > 2 ? 'block' : 'none';
     removeButton.addEventListener('click', () => removeTimer(index));
 
+    const transferButton = document.createElement('button');
+    transferButton.classList.add('transfer-button');
+    transferButton.textContent = 'Transfer';
+    transferButton.addEventListener('click', () => openTransferDialog(index));
+
     const ratiosContainer = document.createElement('div');
     ratiosContainer.classList.add('ratios');
     ratiosContainer.id = `ratios-${index}`;
@@ -326,6 +335,7 @@ function createTimerElement(timer, index) {
     timerHeader.appendChild(display);
     timerHeader.appendChild(toggleButton);
     timerHeader.appendChild(removeButton);
+    timerHeader.appendChild(transferButton);
 
     timerElement.appendChild(timerHeader);
     timerElement.appendChild(ratiosContainer);
@@ -338,4 +348,36 @@ function createTimerElement(timer, index) {
 
 function toggleTheme() {
     document.body.classList.toggle('dark');
+}
+
+function openTransferDialog(index) {
+    transferSourceIndex = index;
+    const transferTargetSelect = document.getElementById('transfer-target');
+    transferTargetSelect.innerHTML = '';
+    timers.forEach((timer, i) => {
+        if (i !== index) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = timer.name;
+            transferTargetSelect.appendChild(option);
+        }
+    });
+    document.getElementById('transfer-dialog').style.display = 'block';
+}
+
+function closeTransferDialog() {
+    document.getElementById('transfer-dialog').style.display = 'none';
+    transferSourceIndex = null;
+}
+
+function confirmTransfer() {
+    const amount = parseInt(document.getElementById('transfer-amount').value, 10);
+    const targetIndex = parseInt(document.getElementById('transfer-target').value, 10);
+    if (!isNaN(amount) && amount > 0 && transferSourceIndex !== null && targetIndex !== null) {
+        timers[transferSourceIndex].time -= amount;
+        timers[targetIndex].time += amount;
+        loadTimers();
+        saveLocal();
+        closeTransferDialog();
+    }
 }
