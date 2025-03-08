@@ -63,6 +63,7 @@ function addTimerBlock() {
     timerDisplay.className = 'timer-display';
     timerDisplay.textContent = '00:00:00';
     timerDisplay.style.textAlign = 'center';
+    timerDisplay.onclick = () => showEditDialog(timerBlock);
     timerBlock.appendChild(timerDisplay);
     
     // Button container
@@ -105,6 +106,38 @@ function addTimerBlock() {
     timerContainer.appendChild(timerBlock);
 
     return timerBlock; // Return the created timer block
+}
+
+// Function to show the edit dialog for the timer value
+function showEditDialog(timerBlock) {
+    const timerDisplay = timerBlock.querySelector('.timer-display');
+    const [hours, minutes, seconds] = timerDisplay.textContent.split(':').map(Number);
+
+    const dialog = document.createElement('div');
+    dialog.className = 'edit-dialog';
+    dialog.innerHTML = `
+        <input type="number" class="edit-hours" value="${hours}" min="0" max="99"> :
+        <input type="number" class="edit-minutes" value="${minutes}" min="0" max="59"> :
+        <input type="number" class="edit-seconds" value="${seconds}" min="0" max="59">
+    `;
+    document.body.appendChild(dialog);
+
+    const closeDialog = () => {
+        const newHours = dialog.querySelector('.edit-hours').value.padStart(2, '0');
+        const newMinutes = dialog.querySelector('.edit-minutes').value.padStart(2, '0');
+        const newSeconds = dialog.querySelector('.edit-seconds').value.padStart(2, '0');
+        timerDisplay.textContent = `${newHours}:${newMinutes}:${newSeconds}`;
+        document.body.removeChild(dialog);
+        updateTimerRatios();
+    };
+
+    dialog.querySelectorAll('input').forEach(input => {
+        input.addEventListener('blur', closeDialog);
+    });
+
+    if (currentRunningTimer && currentRunningTimer[0] === timerBlock) {
+        toggleTimer(timerBlock, timerBlock.querySelector('.play-button'));
+    }
 }
 
 // Function to toggle the timer (start/pause)
