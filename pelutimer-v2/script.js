@@ -122,15 +122,21 @@ function toggleTimer(timerBlock, button) {
         button.style.backgroundImage = 'url("../pictures/pause.png")';
         currentRunningTimer = [timerBlock, button];
         timerBlock.classList.remove('inactive');
+        
+        let lastTickTime = Date.now();
         timerBlock.timerInterval = setInterval(() => {
+            const currentTime = Date.now();
+            const elapsedTime = Math.floor((currentTime - lastTickTime) / 1000);
+            lastTickTime = currentTime;
+
             let [hours, minutes, seconds] = timerDisplay.textContent.split(':').map(Number);
-            seconds++;
-            if (seconds === 60) {
-                seconds = 0;
-                minutes++;
-                if (minutes === 60) {
-                    minutes = 0;
-                    hours++;
+            seconds += elapsedTime;
+            if (seconds >= 60) {
+                minutes += Math.floor(seconds / 60);
+                seconds = seconds % 60;
+                if (minutes >= 60) {
+                    hours += Math.floor(minutes / 60);
+                    minutes = minutes % 60;
                 }
             }
             timerDisplay.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
