@@ -189,10 +189,11 @@ function updateTimerRatios() {
                 const otherTotalSeconds = otherHours * 3600 + otherMinutes * 60 + otherSeconds;
 
                 const ratio = otherTotalSeconds === 0 ? '0.00' : (totalSeconds / otherTotalSeconds).toFixed(2);
-                ratiosText += `${ratio}x ${otherTitle}\n`;
+                const color = ratio > 1 ? '#00ff00' : 'red';
+                ratiosText += `<span style="color:${color}">${ratio}x</span> ${otherTitle}\n`;
             }
         });
 
-        block.querySelector('.timer-ratio').textContent = ratiosText;
+        block.querySelector('.timer-ratio').innerHTML = ratiosText;
     });
 }
