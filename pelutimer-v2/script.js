@@ -1,5 +1,8 @@
+import { Timer } from './timer.js';
+
 // Event listener for DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("Page loaded!")
     if (!loadTimerData()) {
         addTimerBlock();
         addTimerBlock();
@@ -65,6 +68,10 @@ function addTimerBlock() {
     timerDisplay.style.textAlign = 'center';
     timerDisplay.onclick = () => showEditDialog(timerBlock);
     timerBlock.appendChild(timerDisplay);
+    
+    // Create a new Timer object and associate it with the timer block
+    const timer = new Timer(timerTitle.value, timerDisplay);
+    timerBlock.timer = timer;
     
     // Button container
     const buttonContainer = document.createElement('div');
@@ -142,42 +149,24 @@ function showEditDialog(timerBlock) {
 
 // Function to toggle the timer (start/pause)
 function toggleTimer(timerBlock, button) {
-    const timerDisplay = timerBlock.querySelector('.timer-display');
     const allTimerBlocks = document.querySelectorAll('.timer-block');
+    const timer = timerBlock.timer;
     
     if (button.style.backgroundImage.includes('play.png')) {
         if (currentRunningTimer) {
             const [currentBlock, currentButton] = currentRunningTimer;
             currentButton.style.backgroundImage = 'url("../pictures/play.png")';
-            clearInterval(currentBlock.timerInterval);
+            currentBlock.timer.stopTimer();
             currentBlock.classList.add('inactive');
         }
         button.style.backgroundImage = 'url("../pictures/pause.png")';
         currentRunningTimer = [timerBlock, button];
         timerBlock.classList.remove('inactive');
         
-        let lastTickTime = Date.now();
-        timerBlock.timerInterval = setInterval(() => {
-            const currentTime = Date.now();
-            const elapsedTime = Math.floor((currentTime - lastTickTime) / 1000);
-            lastTickTime = currentTime;
-
-            let [hours, minutes, seconds] = timerDisplay.textContent.split(':').map(Number);
-            seconds += elapsedTime;
-            if (seconds >= 60) {
-                minutes += Math.floor(seconds / 60);
-                seconds = seconds % 60;
-                if (minutes >= 60) {
-                    hours += Math.floor(minutes / 60);
-                    minutes = minutes % 60;
-                }
-            }
-            timerDisplay.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            updateTimerRatios();
-        }, 1000);
+        timer.startTimer();
     } else {
         button.style.backgroundImage = 'url("../pictures/play.png")';
-        clearInterval(timerBlock.timerInterval);
+        timer.stopTimer();
         currentRunningTimer = null;
         timerBlock.classList.add('inactive');
     }
