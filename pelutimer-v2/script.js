@@ -33,6 +33,7 @@ function saveTimerData() {
 }
 // Make force local save possible
 window.saveTimerData = saveTimerData;
+
 // Function to load timer data from cookies
 function loadTimerData() {
     const cookies = document.cookie.split('; ');
@@ -190,5 +191,19 @@ function updateTimerRatios() {
         });
 
         block.querySelector('.timer-ratio').innerHTML = ratiosText;
+    });
+}
+
+// Function to set a timer's time based on its title
+window.setTimerByTitle = function(title, hours, minutes, seconds) {
+    const allTimerBlocks = document.querySelectorAll('.timer-block');
+    const lowerCaseTitle = title.toLowerCase();
+
+    allTimerBlocks.forEach(block => {
+        const timerTitle = block.querySelector('.timer-title').value.toLowerCase();
+        if (timerTitle === lowerCaseTitle) {
+            block.timer.setTime(hours, minutes, seconds);
+            console.log(`Timer "${title}" set to ${hours}h ${minutes}m ${seconds}s`);
+        }
     });
 }

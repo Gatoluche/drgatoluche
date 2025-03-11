@@ -52,6 +52,11 @@ export class Timer {
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     }
 
+    setTime(hours, minutes, seconds) {
+        this.time = (hours * 3600 + minutes * 60 + seconds) * 1000;
+        this.updateDisplay();
+    }
+
     updateDisplay() {
         if (this.displayElement) {
             this.displayElement.textContent = this.getTime();
