@@ -77,23 +77,6 @@ body {
     display: none;
 }
 
-.add-block-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    font-weight: bold;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    position: fixed;
-    bottom: 20px;
-    font-size: 16px;
-}
-
-.add-block-button:hover {
-    background-color: #0056b3;
-}
-
 .standard-button {
     background-color: #007bff;
     color: white;
@@ -166,4 +149,26 @@ body {
 .edit-dialog input {
     width: 3em;
     text-align: center;
+}
+
+.bottom-buttons {
+    position: fixed;
+    bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.bottom-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.bottom-button:hover {
+    background-color: #0056b3;
 }

@@ -1,5 +1,8 @@
 import { Timer } from './timer.js';
 
+// Attach Timer class to the window object
+window.Timer = Timer;
+
 // Event listener for DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Page loaded!")
@@ -28,7 +31,8 @@ function saveTimerData() {
 
     document.cookie = `timerData=${JSON.stringify(timerData)}; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT`;
 }
-
+// Make force local save possible
+window.saveTimerData = saveTimerData;
 // Function to load timer data from cookies
 function loadTimerData() {
     const cookies = document.cookie.split('; ');
@@ -48,7 +52,7 @@ function loadTimerData() {
 }
 
 // Function to add a new timer block to the DOM
-function addTimerBlock(timer = new Timer()) {
+window.addTimerBlock = function(timer = new Timer()) {
     const timerContainer = document.getElementById('timer-container');
     const timerBlock = document.createElement('div');
     timerBlock.className = 'timer-block';
