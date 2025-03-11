@@ -10,6 +10,11 @@ export class Timer {
 
     startTimer() {
         this.timeStarted = Date.now();
+        // Prevent stupid error where timer starts as NaN due to cookie corruption.
+        if(isNaN(this.time)) {
+            console.log("ERROR: Timer is NaN. Setting to 0.");
+            this.time = 0;
+        }
         this.intervalId = setInterval(() => this.tickTimer(), 1000); // Create a one-second interval
     }
 
@@ -26,11 +31,13 @@ export class Timer {
     }
 
     tickTimer() {
-        const elapsedTime = Date.now() - this.timeStarted;
+        //console.log((Date.now() - this.timeStarted) + " (" + Date.now() + " - " + this.timeStarted +")");
+        const elapsedTime = (Date.now() - this.timeStarted);
+        //console.log(this.time + " + " + elapsedTime);
         this.time += elapsedTime;
         this.timeStarted = Date.now();
+        //console.log(this.title + ": " + this.getTime());
         this.updateDisplay();
-        // Update the timer display or perform other actions
     }
 
     isRunning() {
