@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setAllTimersInactive();
     updateTimerRatios();
     setInterval(saveTimerData, 10000); // Save data every 10 seconds
+    createTransferDialog();
 });
 
 // Global variable to track the currently running timer
@@ -215,6 +216,9 @@ function showEditFields(timerBlock, timer) {
     const buttonContainer = timerBlock.querySelector('.button-container');
     const { hours, minutes, seconds } = msToTime(timer.time);
 
+    // Add editing class
+    timerBlock.classList.add('editing');
+
     // Create input fields for hours, minutes, and seconds
     const hoursInput = document.createElement('input');
     hoursInput.type = 'text';
@@ -259,6 +263,8 @@ function showEditFields(timerBlock, timer) {
         }
         renderTimers();
         updateTimerRatios();
+        // Remove editing class
+        timerBlock.classList.remove('editing');
     };
 
     const cancelButton = document.createElement('button');
@@ -267,6 +273,8 @@ function showEditFields(timerBlock, timer) {
     cancelButton.onclick = () => {
         renderTimers();
         updateTimerRatios();
+        // Remove editing class
+        timerBlock.classList.remove('editing');
     };
 
     // Replace the button container with confirm and cancel buttons
@@ -278,4 +286,89 @@ function showEditFields(timerBlock, timer) {
     hoursInput.addEventListener('click', (e) => e.stopPropagation());
     minutesInput.addEventListener('click', (e) => e.stopPropagation());
     secondsInput.addEventListener('click', (e) => e.stopPropagation());
+}
+
+// Function to create the transfer dialog
+function createTransferDialog() {
+    const transferDialog = document.createElement('div');
+    transferDialog.className = 'transfer-dialog';
+    transferDialog.id = 'transfer-dialog';
+
+    const timer1Select = document.createElement('select');
+    timer1Select.id = 'timer1-select';
+    const timer2Select = document.createElement('select');
+    timer2Select.id = 'timer2-select';
+
+    const hoursInput = document.createElement('input');
+    hoursInput.type = 'number';
+    hoursInput.placeholder = 'Hours';
+    hoursInput.id = 'transfer-hours';
+
+    const minutesInput = document.createElement('input');
+    minutesInput.type = 'number';
+    minutesInput.placeholder = 'Minutes';
+    minutesInput.id = 'transfer-minutes';
+
+    const secondsInput = document.createElement('input');
+    secondsInput.type = 'number';
+    secondsInput.placeholder = 'Seconds';
+    secondsInput.id = 'transfer-seconds';
+
+    const confirmButton = document.createElement('button');
+    confirmButton.textContent = 'Confirm';
+    confirmButton.onclick = () => {
+        const timer1 = timers[timer1Select.value];
+        const timer2 = timers[timer2Select.value];
+        const hours = parseInt(hoursInput.value, 10) || 0;
+        const minutes = parseInt(minutesInput.value, 10) || 0;
+        const seconds = parseInt(secondsInput.value, 10) || 0;
+
+        if (timer1 && timer2 && (hours || minutes || seconds)) {
+            timer1.addTime(-hours, -minutes, -seconds);
+            timer2.addTime(hours, minutes, seconds);
+            renderTimers();
+            updateTimerRatios();
+            transferDialog.style.display = 'none';
+        }
+    };
+
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.onclick = () => {
+        transferDialog.style.display = 'none';
+    };
+
+    transferDialog.appendChild(timer1Select);
+    transferDialog.appendChild(hoursInput);
+    transferDialog.appendChild(minutesInput);
+    transferDialog.appendChild(secondsInput);
+    transferDialog.appendChild(timer2Select);
+    transferDialog.appendChild(confirmButton);
+    transferDialog.appendChild(cancelButton);
+
+    document.body.appendChild(transferDialog);
+}
+
+// Function to show the transfer dialog
+window.showTransferDialog = function() {
+    const transferDialog = document.getElementById('transfer-dialog');
+    const timer1Select = document.getElementById('timer1-select');
+    const timer2Select = document.getElementById('timer2-select');
+
+    timer1Select.innerHTML = '';
+    timer2Select.innerHTML = '';
+
+    timers.forEach((timer, index) => {
+        const option1 = document.createElement('option');
+        option1.value = index;
+        option1.textContent = timer.title || `Timer ${index + 1}`;
+        timer1Select.appendChild(option1);
+
+        const option2 = document.createElement('option');
+        option2.value = index;
+        option2.textContent = timer.title || `Timer ${index + 1}`;
+        timer2Select.appendChild(option2);
+    });
+
+    transferDialog.style.display = 'block';
 }

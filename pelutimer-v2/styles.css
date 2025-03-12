@@ -28,6 +28,10 @@ body {
     background-color: #0056b3;
 }
 
+.timer-block.editing {
+    background-color: #00abb8;
+}
+
 .timer-block .button-container {
     display: flex;
     justify-content: center;
@@ -186,4 +190,28 @@ body {
 
 .bottom-button:hover {
     background-color: #0056b3;
+}
+
+.transfer-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    z-index: 1000;
+    display: none;
+}
+
+.transfer-dialog input,
+.transfer-dialog select {
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 100%;
+}
+
+.transfer-dialog button {
+    margin-top: 10px;
+    padding: 5px 10px;
 }
