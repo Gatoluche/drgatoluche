@@ -82,7 +82,7 @@ function renderTimers() {
         timerDisplay.className = 'timer-display';
         timerDisplay.textContent = timer.getTime();
         timerDisplay.style.textAlign = 'center';
-        timerDisplay.onclick = () => showEditDialog(timerBlock);
+        timerDisplay.onclick = () => showEditFields(timerBlock, timer);
         timerBlock.appendChild(timerDisplay);
         
         // Associate the timer object with the timer block and set the display element
@@ -202,4 +202,67 @@ export function updateTimerRatios() {
 
         block.querySelector('.timer-ratio').innerHTML = ratiosText;
     });
+}
+
+function showEditFields(timerBlock, timer) {
+    const timerDisplay = timerBlock.querySelector('.timer-display');
+    const buttonContainer = timerBlock.querySelector('.button-container');
+    const { hours, minutes, seconds } = msToTime(timer.time);
+
+    // Create input fields for hours, minutes, and seconds
+    const hoursInput = document.createElement('input');
+    hoursInput.type = 'number';
+    hoursInput.value = hours;
+    hoursInput.className = 'timer-input';
+    hoursInput.style.width = '30px';
+
+    const minutesInput = document.createElement('input');
+    minutesInput.type = 'number';
+    minutesInput.value = minutes;
+    minutesInput.className = 'timer-input';
+    minutesInput.style.width = '30px';
+
+    const secondsInput = document.createElement('input');
+    secondsInput.type = 'number';
+    secondsInput.value = seconds;
+    secondsInput.className = 'timer-input';
+    secondsInput.style.width = '30px';
+
+    // Replace the timer display with input fields
+    timerDisplay.innerHTML = '';
+    timerDisplay.appendChild(hoursInput);
+    timerDisplay.appendChild(document.createTextNode(':'));
+    timerDisplay.appendChild(minutesInput);
+    timerDisplay.appendChild(document.createTextNode(':'));
+    timerDisplay.appendChild(secondsInput);
+
+    // Create confirm and cancel buttons
+    const confirmButton = document.createElement('button');
+    confirmButton.style.backgroundImage = 'url("../pictures/check.png")';
+    confirmButton.onclick = () => {
+        const newHours = parseInt(hoursInput.value, 10);
+        const newMinutes = parseInt(minutesInput.value, 10);
+        const newSeconds = parseInt(secondsInput.value, 10);
+        timer.setTime(newHours, newMinutes, newSeconds);
+        renderTimers();
+        updateTimerRatios();
+    };
+
+    const cancelButton = document.createElement('button');
+    cancelButton.style.backgroundImage = 'url("../pictures/close.png")';
+    cancelButton.className = 'play-button';
+    cancelButton.onclick = () => {
+        renderTimers();
+        updateTimerRatios();
+    };
+
+    // Replace the button container with confirm and cancel buttons
+    buttonContainer.innerHTML = '';
+    buttonContainer.appendChild(confirmButton);
+    buttonContainer.appendChild(cancelButton);
+
+    // Prevent the input fields from losing focus
+    hoursInput.addEventListener('click', (e) => e.stopPropagation());
+    minutesInput.addEventListener('click', (e) => e.stopPropagation());
+    secondsInput.addEventListener('click', (e) => e.stopPropagation());
 }

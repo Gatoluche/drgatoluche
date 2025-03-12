@@ -58,12 +58,27 @@ body {
 }
 
 .timer-block button.play-button {
-    background-size: 80%;
+    background-size: 75%;
 }
+
 
 .timer-display {
     font-size: 24px;
     margin-bottom: 10px;
+}
+
+.timer-input {
+    font-size: 24px;
+    font-weight: bold;
+    width: 1.5em;
+    background: none;
+    border: none;
+    color: white;
+    text-align: center;
+}
+
+.timer-input:focus {
+    outline: none;
 }
 
 .floating-dialog {
