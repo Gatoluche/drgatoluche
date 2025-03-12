@@ -38,6 +38,7 @@ export class Timer {
         this.timeStarted = Date.now();
         //console.log(this.title + ": " + this.getTime());
         this.updateDisplay();
+        updateTimerRatios();
     }
 
     isRunning() {
