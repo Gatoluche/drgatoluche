@@ -102,7 +102,13 @@ function renderTimers() {
         // Reset button
         const resetButton = document.createElement('button');
         resetButton.style.backgroundImage = 'url("../pictures/transfer.png")';
-        resetButton.onclick = () => timer.resetTimer();
+        resetButton.onclick = () => {
+            if (startPauseButton.style.backgroundImage.includes('pause.png')) {
+                toggleTimer(timer, startPauseButton);
+            }
+            timer.resetTimer();
+            updateTimerRatios();
+        };
         buttonContainer.appendChild(resetButton);
         
         // Delete button
@@ -211,20 +217,20 @@ function showEditFields(timerBlock, timer) {
 
     // Create input fields for hours, minutes, and seconds
     const hoursInput = document.createElement('input');
-    hoursInput.type = 'number';
-    hoursInput.value = hours;
+    hoursInput.type = 'text';
+    hoursInput.value = String(hours).padStart(2, '0');
     hoursInput.className = 'timer-input';
     hoursInput.style.width = '30px';
 
     const minutesInput = document.createElement('input');
-    minutesInput.type = 'number';
-    minutesInput.value = minutes;
+    minutesInput.type = 'text';
+    minutesInput.value = String(minutes).padStart(2, '0');
     minutesInput.className = 'timer-input';
     minutesInput.style.width = '30px';
 
     const secondsInput = document.createElement('input');
-    secondsInput.type = 'number';
-    secondsInput.value = seconds;
+    secondsInput.type = 'text';
+    secondsInput.value = String(seconds).padStart(2, '0');
     secondsInput.className = 'timer-input';
     secondsInput.style.width = '30px';
 
@@ -243,7 +249,14 @@ function showEditFields(timerBlock, timer) {
         const newHours = parseInt(hoursInput.value, 10);
         const newMinutes = parseInt(minutesInput.value, 10);
         const newSeconds = parseInt(secondsInput.value, 10);
-        timer.setTime(newHours, newMinutes, newSeconds);
+
+        // Check if the inputs are valid integers
+        if (isNaN(newHours) || isNaN(newMinutes) || isNaN(newSeconds)) {
+            console.log('ERROR: Tried to set timer to a non-numerical value.');
+        } else {
+            timer.setTime(newHours, newMinutes, newSeconds);
+            
+        }
         renderTimers();
         updateTimerRatios();
     };
