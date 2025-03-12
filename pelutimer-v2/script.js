@@ -1,4 +1,5 @@
 import { Timer } from './timer.js';
+import { msToTime } from './utils.js';
 
 // Attach Timer class to the window object
 window.Timer = Timer;
@@ -176,7 +177,7 @@ function setAllTimersInactive() {
 }
 
 // Function to update the timer ratios
-function updateTimerRatios() {
+export function updateTimerRatios() {
     const allTimerBlocks = document.querySelectorAll('.timer-block');
     allTimerBlocks.forEach(block => {
         const timerDisplay = block.querySelector('.timer-display').textContent;
@@ -200,17 +201,5 @@ function updateTimerRatios() {
         });
 
         block.querySelector('.timer-ratio').innerHTML = ratiosText;
-    });
-}
-
-// Function to set a timer's time based on its title
-window.setTimerByTitle = function(title, hours, minutes, seconds) {
-    const lowerCaseTitle = title.toLowerCase();
-
-    timers.forEach(timer => {
-        if (timer.title.toLowerCase() === lowerCaseTitle) {
-            timer.setTime(hours, minutes, seconds);
-            console.log(`Timer "${title}" set to ${hours}h ${minutes}m ${seconds}s`);
-        }
     });
 }

@@ -1,3 +1,6 @@
+import { updateTimerRatios } from './script.js';
+import { timeToMs, msToTime } from './utils.js';
+
 // Main timer class
 export class Timer {
     constructor(title = 'Timer', displayElement = null) {
@@ -31,12 +34,9 @@ export class Timer {
     }
 
     tickTimer() {
-        //console.log((Date.now() - this.timeStarted) + " (" + Date.now() + " - " + this.timeStarted +")");
         const elapsedTime = (Date.now() - this.timeStarted);
-        //console.log(this.time + " + " + elapsedTime);
         this.time += elapsedTime;
         this.timeStarted = Date.now();
-        //console.log(this.title + ": " + this.getTime());
         this.updateDisplay();
         updateTimerRatios();
     }
@@ -46,15 +46,22 @@ export class Timer {
     }
 
     getTime() { // Returns readable time value
-        const totalSeconds = Math.floor(this.time / 1000);
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
+        const { hours, minutes, seconds } = msToTime(this.time);
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     }
 
     setTime(hours, minutes, seconds) {
-        this.time = (hours * 3600 + minutes * 60 + seconds) * 1000;
+        this.time = timeToMs(hours, minutes, seconds);
+        this.updateDisplay();
+    }
+
+    addTime(hours, minutes, seconds) {
+        const additionalTime = timeToMs(hours, minutes, seconds);
+        this.time += additionalTime;
+        if (this.time < 0) {
+            console.warn(`Warning: Timer "${this.title}" time is less than zero.`);
+            this.time = 0;
+        }
         this.updateDisplay();
     }
 
