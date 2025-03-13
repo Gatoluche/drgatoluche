@@ -372,3 +372,49 @@ window.showTransferDialog = function() {
 
     transferDialog.style.display = 'block';
 }
+
+// Function to import timers from JSON
+window.importTimersFromJSON = function() {
+    const jsonInput = document.getElementById('data-field').textContent;
+    try {
+        const timerData = JSON.parse(jsonInput);
+        timers.length = 0; // Clear existing timers
+        timerData.forEach(data => {
+            const timer = Timer.fromJSON(JSON.stringify(data));
+            timers.push(timer);
+        });
+        renderTimers();
+        updateTimerRatios();
+    } catch (error) {
+        console.error('Invalid JSON data:', error);
+    }
+}
+
+// Function to export timers to JSON
+window.exportTimersToJSON = function() {
+    const jsonOutput = timers.map(timer => JSON.parse(timer.toJSON()));
+    document.getElementById('data-field').textContent = JSON.stringify(jsonOutput, null, 2);
+}
+
+// Function to export timers to readable format
+window.exportTimersToReadable = function(mkdown = false) {
+    const readableOutput = timers.map(timer => timer.toString(mkdown)).join("\n\n");
+    document.getElementById('data-field').innerHTML = readableOutput.replace(/\n/g, '<br>');
+}
+// Function to switch the theme
+window.switchTheme = function() {
+    const body = document.body;
+    const timerRatios = document.querySelectorAll('.timer-ratio');
+
+    if (body.style.backgroundColor === 'white') {
+        body.style.backgroundColor = 'black';
+        body.style.color = 'white';
+        timerRatios.forEach(ratio => ratio.style.color = 'white');
+
+    } else {
+        console.log(body.style.backgroundColor);
+        body.style.backgroundColor = 'white';
+        body.style.color = 'black';
+        timerRatios.forEach(ratio => ratio.style.color = 'black');
+    }
+}

@@ -15,13 +15,31 @@
             <button id="downloadButton" class="standard-button">Download</button>
         </div-->
         
+    <h1 class="title">Pelutimer</h1>
     <div id="timer-container">
         <!-- Timer blocks will be dynamically added here -->
     </div>
+
+    <div>
+        <br>
+        <br>
+        <p id="data-field" style="color:gray; white-space: pre-wrap;" contenteditable="true">
+            Data export / import goes here.
+        </p>
+    </div>
     <div class="bottom-buttons">
-        <button class="bottom-button" onclick="addTimer(new Timer())">Add Block</button>
-        <button class="bottom-button" onclick="saveTimerData()">Force Local Save</button>
-        <button class="bottom-button" onclick="showTransferDialog()">Transfer</button>
+        <div class="button-row">
+            <button class="bottom-button" onclick="addTimer(new Timer())">Add Block</button>
+            <button class="bottom-button" onclick="saveTimerData()">Force Local Save</button>
+            <button class="bottom-button" onclick="showTransferDialog()">Transfer</button>
+            <button class="bottom-button" onclick="switchTheme()">Switch Theme</button>
+        </div>
+        <div class="button-row">
+            <button class="bottom-button" onclick="importTimersFromJSON()">Import JSON</button>
+            <button class="bottom-button" onclick="exportTimersToJSON()">Export JSON</button>
+            <button class="bottom-button" onclick="exportTimersToReadable()">Export Readable</button>
+            <button class="bottom-button" onclick="exportTimersToReadable(true)">Export Markdown</button>
+        </div>
     </div>
 </body>
 </html>
