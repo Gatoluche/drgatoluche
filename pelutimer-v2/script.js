@@ -1,5 +1,6 @@
 import { Timer } from './timer.js';
 import { msToTime } from './utils.js';
+import { createHistoryEntry } from './history.js';
 
 // Attach Timer class to the window object
 window.Timer = Timer;
@@ -18,6 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTimerRatios();
     setInterval(saveTimerData, 10000); // Save data every 10 seconds
     createTransferDialog();
+
+    const addHistoryEntryButton = document.getElementById('add-history-entry');
+    addHistoryEntryButton.onclick = () => {
+        const today = new Date().toLocaleDateString();
+        createHistoryEntry(`Entry - ${today}`, null, timers);
+    };
 });
 
 // Global variable to track the currently running timer
