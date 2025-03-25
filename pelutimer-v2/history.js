@@ -83,28 +83,3 @@ export function createHistoryEntry(title, data, timers) {
     const entryData = { title: titleField.value, data: data || null };
     history.push(entryData);
 }
-
-// Function to initialize the history container
-function initializeHistory() {
-    const historyContainer = document.createElement('div');
-    historyContainer.id = 'history-container';
-    historyContainer.style.position = 'fixed';
-    historyContainer.style.bottom = '20px';
-    historyContainer.style.left = '20px';
-    historyContainer.style.width = '300px';
-    historyContainer.style.maxHeight = '50vh';
-    historyContainer.style.overflowY = 'auto';
-    historyContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-    historyContainer.style.color = 'white';
-    historyContainer.style.padding = '10px';
-    historyContainer.style.border = '1px solid white';
-    historyContainer.style.zIndex = '1100';
-
-    document.body.appendChild(historyContainer);
-}
-
-// Initialize the history container on page load
-document.addEventListener('DOMContentLoaded', () => {
-    initializeHistory();
-    createHistoryEntry('Initial Entry'); // Example entry
-});

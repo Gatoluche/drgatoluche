@@ -24,16 +24,15 @@
         </div>
     </div>
 
-    <div id="floating-text" style="position: fixed; top: 0; right: 0; width: 300px; height: 100vh; overflow-y: auto; padding: 10px; z-index: 1000; background: none; color: white;">
-        <div id="history-container">
-            <!-- History entries will be dynamically added here -->
-        </div>
-        <button id="add-history-entry" style="margin-top: 10px; background-color: #007bff; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px;">
-            Add Today's Entry
-        </button>
+    <div>
+        <br>
+        <br>
+        <p id="data-field" style="color:gray; white-space: pre-wrap;" contenteditable="true">
+            Data export / import goes here.
+        </p>
     </div>
 
-    <div class="bottom-buttons" style="position: fixed; bottom: 20px; right: 320px; z-index: 1100;">
+    <div class="control-panel">
         <div class="button-row">
             <button class="bottom-button" onclick="addTimer(new Timer())">Add Block</button>
             <button class="bottom-button" onclick="saveTimerData()">Force Local Save</button>
@@ -48,12 +47,16 @@
         </div>
     </div>
 
-    <div>
-        <br>
-        <br>
-        <p id="data-field" style="color:gray; white-space: pre-wrap;" contenteditable="true">
-            Data export / import goes here.
-        </p>
+
+    <div id="right-sidebar" class="right-sidebar">
+        <div id="history-container" class="history-container">
+            <!-- History entries will be dynamically added here -->
+        </div>
+        <button id="add-history-entry" class="standard-button" onclick="addHistoryEntry()">
+            Add Today's Entry
+        </button>
     </div>
+    
+
 </body>
 </html>

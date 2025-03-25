@@ -19,12 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTimerRatios();
     setInterval(saveTimerData, 10000); // Save data every 10 seconds
     createTransferDialog();
-
-    const addHistoryEntryButton = document.getElementById('add-history-entry');
-    addHistoryEntryButton.onclick = () => {
-        const today = new Date().toLocaleDateString();
-        createHistoryEntry(`Entry - ${today}`, null, timers);
-    };
+    initializeHistory();
+    createHistoryEntry('Initial Entry'); // Example entry
 });
 
 // Global variable to track the currently running timer
@@ -132,7 +128,7 @@ function renderTimers() {
         
         // Floating dialog
         const dialog = document.createElement('div');
-        dialog.className = 'floating-dialog';
+        dialog.className = 'right-sidebar';
         dialog.textContent = 'TBD';
         timerBlock.appendChild(dialog);
 
@@ -178,7 +174,7 @@ function toggleTimer(timer, button) {
 
 // Function to show/hide the floating dialog
 function showDialog(timerBlock) {
-    const dialog = timerBlock.querySelector('.floating-dialog');
+    const dialog = timerBlock.querySelector('.right-sidebar');
     dialog.style.display = dialog.style.display === 'none' || dialog.style.display === '' ? 'block' : 'none';
 }
 
@@ -424,4 +420,12 @@ window.switchTheme = function() {
         body.style.color = 'black';
         timerRatios.forEach(ratio => ratio.style.color = 'black');
     }
+}
+
+// Function to initialize the history container
+function initializeHistory() {
+    const historyContainer = document.createElement('div');
+    historyContainer.id = 'history-container';
+    historyContainer.className = 'history-container'; // Apply the new class
+    document.body.appendChild(historyContainer);
 }
