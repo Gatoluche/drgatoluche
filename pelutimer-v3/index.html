@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>Pelutimer v3</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<div class="app bg-blue" id="app">
+			<main class="display-area" id="displayArea">
+				<div class="time-field" id="timeField">
+					<!-- active timer label (editable per-timer), now inside the colored card -->
+					<div id="timerLabel" class="timer-label">Blue</div>
+					<div class="time-value">00:00:00</div>
+
+					<!-- ratio legend: compare active timer to the others -->
+					<div class="ratio-legend" id="ratioLegend">
+						<!-- rows generated for each color; JS will update/hide active row -->
+						<div class="ratio-row" data-index="0">
+							<span class="ratio-color blue"></span>
+							<span class="ratio-label">Blue</span>
+							<span class="ratio-value">—</span>
+							<span class="ratio-time">00:00:00</span>
+						</div>
+						<div class="ratio-row" data-index="1">
+							<span class="ratio-color red"></span>
+							<span class="ratio-label">Red</span>
+							<span class="ratio-value">—</span>
+							<span class="ratio-time">00:00:00</span>
+						</div>
+						<div class="ratio-row" data-index="2">
+							<span class="ratio-color yellow"></span>
+							<span class="ratio-label">Yellow</span>
+							<span class="ratio-value">—</span>
+							<span class="ratio-time">00:00:00</span>
+						</div>
+						<div class="ratio-row" data-index="3">
+							<span class="ratio-color green"></span>
+							<span class="ratio-label">Green</span>
+							<span class="ratio-value">—</span>
+							<span class="ratio-time">00:00:00</span>
+						</div>
+					</div>
+				</div>
+			</main>
+
+			<aside class="controls" id="controls">
+				<div class="controls-inner">
+					<div class="button-stack" role="tablist" aria-label="Timer colors">
+						<div class="button-row" aria-hidden="false">
+							<button class="color-btn" data-index="0" data-color="blue" aria-label="Blue timer" id="btn0">
+								<span class="dot" style="background:#2196f3"></span>
+							</button>
+
+							<button class="color-btn" data-index="1" data-color="red" aria-label="Red timer" id="btn1">
+								<span class="dot" style="background:#e53935"></span>
+							</button>
+						</div>
+
+						<div class="button-row" aria-hidden="false">
+							<button class="color-btn" data-index="2" data-color="yellow" aria-label="Yellow timer" id="btn2">
+								<span class="dot" style="background:#fdd835"></span>
+							</button>
+
+							<button class="color-btn" data-index="3" data-color="green" aria-label="Green timer" id="btn3">
+								<span class="dot" style="background:#43a047"></span>
+							</button>
+						</div>
+					</div>
+
+					<div class="spacer"></div>
+
+					<div class="small-legend">
+						<div class="legend-row">
+							<span class="legend-color blue"></span>
+							<span class="legend-label" data-index="0">Blue</span>
+							<span class="legend-value" id="val0">00:00:00</span>
+							<button class="reset-btn" data-index="0" title="Reset Blue">⟳</button>
+						</div>
+						<div class="legend-row">
+							<span class="legend-color red"></span>
+							<span class="legend-label" data-index="1">Red</span>
+							<span class="legend-value" id="val1">00:00:00</span>
+							<button class="reset-btn" data-index="1" title="Reset Red">⟳</button>
+						</div>
+						<div class="legend-row">
+							<span class="legend-color yellow"></span>
+							<span class="legend-label" data-index="2">Yellow</span>
+							<span class="legend-value" id="val2">00:00:00</span>
+							<button class="reset-btn" data-index="2" title="Reset Yellow">⟳</button>
+						</div>
+						<div class="legend-row">
+							<span class="legend-color green"></span>
+							<span class="legend-label" data-index="3">Green</span>
+							<span class="legend-value" id="val3">00:00:00</span>
+							<button class="reset-btn" data-index="3" title="Reset Green">⟳</button>
+						</div>
+					</div>
+
+					<div class="controls-footer">
+						<button id="pauseBtn" class="action-btn" aria-pressed="false" title="Pause / Resume (Space)">Pause</button>
+						<button id="exportBtn" class="action-btn" title="Export timers as JSON">Export</button>
+						<button id="importBtn" class="action-btn" title="Import timers from JSON">Import</button>
+						<!-- inline editing enabled on legend labels (no separate Edit Labels button) -->
+					</div>
+				</div>
+			</aside>
+		</div>
+
+		<!-- Second page: saved timers list (scroll down to view) -->
+		<section class="page saves-page" id="savesPage">
+			<div class="saves-inner">
+				<h2>Saved timer sets</h2>
+				<div id="todaySpot" class="save-row special">
+					<div class="save-date" id="todayDate"></div>
+					<div class="save-value" id="todayValue"></div>
+					<div class="save-actions">
+						<button id="todaySave" class="action-btn">Save</button>
+						<button id="todayLoad" class="action-btn">Load</button>
+						<button id="todayDelete" class="action-btn delete-save" title="Delete">✖</button>
+					</div>
+				</div>
+				<div id="savesList"></div>
+				<div class="saves-footer">
+					<button id="savesExport" class="action-btn">Export all</button>
+					<button id="savesImport" class="action-btn">Import all</button>
+				</div>
+			</div>
+		</section>
+
+		<script src="script.js"></script>
+		<script src="saves.js"></script>
+	</body>
+</html>
+
