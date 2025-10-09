@@ -29,20 +29,29 @@
 		const all = loadAll();
 		const tkey = todayKey();
 		const keys = Object.keys(all).filter(k=>k!==tkey).sort().reverse(); // newest first, exclude today
-		keys.forEach(k=>{
-			const set = all[k];
-			const row = document.createElement('div');
-			row.className = 'save-row';
-			row.innerHTML = `
-				<div class="save-date">${k}</div>
-					<div class="save-value">${formatSet(set)}</div>
-				<div class="save-actions">
-						<button class="action-btn save-save" data-date="${k}">Save</button>
-						<button class="action-btn load-save" data-date="${k}">Load</button>
-						<button class="action-btn delete-save" data-date="${k}" title="Delete">✖</button>
-				</div>`;
-			container.appendChild(row);
-		});
+			keys.forEach(k => {
+				const set = all[k];
+				const row = document.createElement('div');
+				row.className = 'save-row';
+
+				const dateDiv = document.createElement('div');
+				dateDiv.className = 'save-date';
+				dateDiv.textContent = k;
+				row.appendChild(dateDiv);
+
+				const valueDiv = createSaveValueElement(set);
+				row.appendChild(valueDiv);
+
+				const actions = document.createElement('div');
+				actions.className = 'save-actions';
+				const btnSave = document.createElement('button'); btnSave.className = 'action-btn save-save'; btnSave.dataset.date = k; btnSave.textContent = 'Save';
+				const btnLoad = document.createElement('button'); btnLoad.className = 'action-btn load-save'; btnLoad.dataset.date = k; btnLoad.textContent = 'Load';
+				const btnDel = document.createElement('button'); btnDel.className = 'action-btn delete-save'; btnDel.dataset.date = k; btnDel.title = 'Delete'; btnDel.textContent = '✖';
+				actions.appendChild(btnSave); actions.appendChild(btnLoad); actions.appendChild(btnDel);
+				row.appendChild(actions);
+
+				container.appendChild(row);
+			});
 	}
 
 	function formatSet(set){
@@ -86,6 +95,48 @@
 		return `${pad(hrs)}:${pad(min)}:${pad(sec)}`;
 	}
 
+	// build a DOM element for the saved-set value (one or more timers)
+	function createSaveValueElement(set){
+		const wrapper = document.createElement('div');
+		wrapper.className = 'save-value';
+		if(!set || !Array.isArray(set.timers)){
+			wrapper.textContent = '(empty)';
+			return wrapper;
+		}
+		const colors = ['blue','red','yellow','green'];
+		const labels = Array.isArray(set.labels) ? set.labels : ['Blue','Red','Yellow','Green'];
+		set.timers.forEach((t,i)=>{
+			const row = document.createElement('div');
+			row.className = 'save-timer';
+			row.style.display = 'flex';
+			row.style.alignItems = 'center';
+			row.style.gap = '8px';
+			row.style.margin = '6px 0';
+
+			const sw = document.createElement('span');
+			sw.className = `legend-color ${colors[i] || 'blue'}`;
+			// styling handled by CSS
+			row.appendChild(sw);
+
+			const lbl = document.createElement('span');
+			lbl.className = 'save-timer-label';
+			lbl.style.flex = '1';
+			lbl.style.fontWeight = '600';
+			lbl.textContent = labels[i] || `Timer ${i+1}`;
+			row.appendChild(lbl);
+
+			const tim = document.createElement('span');
+			tim.className = 'save-timer-time';
+			tim.style.fontVariantNumeric = 'tabular-nums';
+			tim.style.fontWeight = '600';
+			tim.textContent = formatHHMMSS(Number(t)||0);
+			row.appendChild(tim);
+
+			wrapper.appendChild(row);
+		});
+		return wrapper;
+	}
+
 	function wire(){
 		const today = document.getElementById('todayDate');
 		const tv = document.getElementById('todayValue');
@@ -97,7 +148,11 @@
 		const all = loadAll();
 		const tkey = todayKey();
 		if(all[tkey]){
-			if(tv) tv.textContent = formatSet(all[tkey]);
+			if(tv){
+				const el = createSaveValueElement(all[tkey]);
+				tv.innerHTML = '';
+				tv.appendChild(el);
+			}
 		} else {
 			if(tv) tv.textContent = '(empty)';
 		}
@@ -113,7 +168,7 @@
 			all2[tkey] = payload;
 			saveAll(all2);
 			render();
-			if(tv) tv.textContent = formatSet(payload);
+			if(tv){ tv.innerHTML = ''; tv.appendChild(createSaveValueElement(payload)); }
 			console.debug('Saved current timers to', tkey);
 		});
 
