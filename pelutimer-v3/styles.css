@@ -187,6 +187,40 @@ body { scroll-snap-type: y mandatory; overflow-y: auto }
 	font-weight:700;
 }
 
+/* edit-timer button in the corner of the time card */
+.edit-time-btn{
+	position:absolute;
+	right:18px;
+	top:18px;
+	width:36px;
+	height:36px;
+	border-radius:8px;
+	border:0;
+	background:transparent; /* hidden unless hovered */
+	color:inherit;
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	cursor:pointer;
+	font-size:14px;
+	transition:background .12s ease, transform .12s ease;
+}
+.edit-time-btn:hover, .edit-time-btn:focus{background:rgba(255,255,255,0.06);transform:translateY(-1px)}
+.time-field{position:relative}
+
+/* editable time input to match the big display */
+.time-field .time-input{
+	font-size:13vmin;
+	letter-spacing:6px;
+	background:transparent;
+	border:0;
+	color:inherit;
+	outline:2px solid rgba(255,255,255,0.06);
+	padding:0 6px;
+	text-align:center;
+	font-weight:700;
+}
+
 .time-value{
 	font-size:13vmin; /* slightly larger */
 	letter-spacing:6px;

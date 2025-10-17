@@ -74,6 +74,8 @@
 			// find timerLabel DOM node (it's inside the time card)
 			this.timerLabelEl = this.timeCard ? this.timeCard.querySelector('#timerLabel') : document.getElementById('timerLabel');
 			this.ratioRows = Array.from(document.querySelectorAll('.ratio-row'));
+			this.editing = false; // whether the active timer is in edit mode
+			this.editInput = null;
 			this.updateUI();
 			this.attachControls();
 			this.attachLabelRenames();
@@ -102,11 +104,26 @@
 			const pauseBtn = document.getElementById('pauseBtn');
 			const exportBtn = document.getElementById('exportBtn');
 			const importBtn = document.getElementById('importBtn');
+			const editTimeBtn = document.getElementById('editTimeBtn');
 			const editLabelsBtn = document.getElementById('editLabelsBtn');
 			if (pauseBtn) pauseBtn.addEventListener('click', () => this.togglePause());
 			if (exportBtn) exportBtn.addEventListener('click', () => this.exportTimers());
 			if (importBtn) importBtn.addEventListener('click', () => this.importTimers());
 			if (editLabelsBtn) editLabelsBtn.addEventListener('click', () => this.openLabelsModal());
+			if (editTimeBtn) {
+				// use mousedown to handle mouse interaction before the input blur occurs
+				editTimeBtn.addEventListener('mousedown', (e) => {
+					e.preventDefault();
+					this.toggleEditMode();
+				});
+				// keyboard: support Enter/Space to toggle
+				editTimeBtn.addEventListener('keydown', (e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						this.toggleEditMode();
+					}
+				});
+			}
 
 			// keyboard shortcuts: 1-4 select color, Space toggles pause/resume
 			window.addEventListener('keydown', (ev) => {
@@ -179,7 +196,7 @@
 		}
 
 		_tick() {
-			if (this.paused) {
+			if (this.paused || this.editing) {
 				// still update lastTick to avoid large deltas when resumed
 				this.lastTick = Date.now();
 				return;
@@ -224,8 +241,8 @@
 				if (root) root.classList.remove('hidden');
 			}
 
-			// update big display with active timer formatted
-			this.timeField.textContent = formatHHMMSS(this.timers[this.active]);
+			// update big display with active timer formatted (but don't overwrite while editing)
+			if (!this.editing) this.timeField.textContent = formatHHMMSS(this.timers[this.active]);
 			this._updateLabelUI();
 			// update legends for all timers
 			this.legendEls.forEach((el, i) => {
@@ -427,6 +444,83 @@
 					});
 				});
 			});
+		}
+
+		// toggle editing the active timer value
+		toggleEditMode(){
+			if(this.editing){
+				this.exitEditMode(true);
+			}else{
+				this.enterEditMode();
+			}
+		}
+
+		enterEditMode(){
+			if(this.editing) return;
+			this.editing = true;
+			// create input inside the timeField to match style
+			if(!this.timeField) return;
+			const cur = formatHHMMSS(this.timers[this.active]);
+			const input = document.createElement('input');
+			input.type = 'text';
+			input.value = cur;
+			input.className = 'time-input';
+			this.editInput = input;
+			this.timeField.textContent = '';
+			this.timeField.appendChild(input);
+			input.focus();
+			input.select();
+			// stop ticking by marking editing; tick loop already checks this.editing
+			// handle finish on blur or Enter/Escape
+			const finish = (save)=>{
+				this.exitEditMode(save);
+			};
+			input.addEventListener('blur', ()=> finish(true));
+			input.addEventListener('keydown', (ev)=>{
+				if(ev.key === 'Enter') finish(true);
+				if(ev.key === 'Escape') finish(false);
+			});
+		}
+
+		exitEditMode(save){
+			if(!this.editing) return;
+			const input = this.editInput;
+			this.editInput = null;
+			if(save && input){
+				const parsed = this.parseTimeInput(input.value);
+				if(parsed !== null){
+					this.timers[this.active] = parsed;
+					this.saveToStorage();
+				}
+			}
+			this.editing = false;
+			// restore display
+			if(this.timeField){
+				this.timeField.textContent = formatHHMMSS(this.timers[this.active]);
+			}
+		}
+
+		// parse strings like HH:MM:SS or MM:SS or seconds numeric
+		parseTimeInput(str){
+			if(!str) return null;
+			str = str.trim();
+			// accept simple numeric seconds
+			if(/^\d+$/.test(str)) return Number(str);
+			const parts = str.split(':').map(p=>p.trim());
+			if(parts.length === 0) return null;
+			// allow mm:ss or hh:mm:ss
+			if(parts.length === 2){
+				const m = Number(parts[0]);
+				const s = Number(parts[1]);
+				if(Number.isFinite(m) && Number.isFinite(s)) return m*60 + s;
+			}
+			if(parts.length === 3){
+				const h = Number(parts[0]);
+				const m = Number(parts[1]);
+				const s = Number(parts[2]);
+				if(Number.isFinite(h) && Number.isFinite(m) && Number.isFinite(s)) return h*3600 + m*60 + s;
+			}
+			return null;
 		}
 
 
