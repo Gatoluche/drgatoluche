@@ -127,7 +127,8 @@
 
 			// keyboard shortcuts: 1-4 select color, Space toggles pause/resume
 			window.addEventListener('keydown', (ev) => {
-				if (ev.key >= '1' && ev.key <= '4') {
+				// Won't trigger if editing timer value.
+				if (ev.key >= '1' && ev.key <= '4' && this.editing === false) {
 					const idx = Number(ev.key) - 1;
 					this.setActive(idx);
 				} else if (ev.code === 'Space') {
