@@ -29,8 +29,28 @@ if (!is_array($input)) {
 
 $action = $input['action'] ?? '';
 
-require_once __DIR__ . '/icecounter_config.php';
-require_once __DIR__ . '/icecounter_db.php';
+/*
+ * Icecounter diagnostics toggle.
+ * false = generic client error + trace ID
+ * true  = include detailed exception text in API responses
+ */
+define('ICECOUNTER_DEBUG_ERRORS', false);
+
+/*
+ * Server-side logging toggle.
+ * Keep true if you want trace IDs to have matching error_log entries.
+ */
+define('ICECOUNTER_LOG_ERRORS', false);
+
+require_once __DIR__ . '/library.php';
+
+/**
+ * Icecounter DB accessor.
+ */
+function getDB(): PDO
+{
+    return get_shared_pdo();
+}
 
 
 /* ════════════════════════════════════════════
