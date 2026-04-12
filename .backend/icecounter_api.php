@@ -29,6 +29,7 @@ if (!is_array($input)) {
 
 $action = $input['action'] ?? '';
 
+require_once __DIR__ . '/icecounter_config.php';
 require_once __DIR__ . '/icecounter_db.php';
 
 
@@ -101,6 +102,44 @@ function authenticateUser(PDO $pdo, string $passwordA, string $passwordB): ?arra
     return $row;
 }
 
+/**
+ * Emit a structured 500 response and write traceable logs.
+ */
+function respondServerError(string $context, Throwable $error): void
+{
+    $traceId = uniqid('ic_', true);
+
+    if (defined('ICECOUNTER_LOG_ERRORS') && ICECOUNTER_LOG_ERRORS) {
+        error_log(sprintf(
+            'icecounter %s [%s]: %s',
+            $context,
+            $traceId,
+            $error->getMessage()
+        ));
+    }
+
+    http_response_code(500);
+
+    if (defined('ICECOUNTER_DEBUG_ERRORS') && ICECOUNTER_DEBUG_ERRORS) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Server error in ' . $context,
+            'traceId' => $traceId,
+            'debug' => [
+                'exception' => get_class($error),
+                'error' => $error->getMessage(),
+                'code' => (string) $error->getCode(),
+            ],
+        ]);
+        return;
+    }
+
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Server error. Trace ID: ' . $traceId,
+    ]);
+}
+
 
 /* ════════════════════════════════════════════
    SECTION: ACTION ROUTER
@@ -148,10 +187,8 @@ switch ($action) {
                 'monster'  => (int) $row['monster'],
             ]);
 
-        } catch (PDOException $e) {
-            error_log('icecounter login: ' . $e->getMessage());
-            http_response_code(500);
-            echo json_encode(['status' => 'error']);
+        } catch (Throwable $e) {
+            respondServerError('login', $e);
         }
         break;
     }
@@ -189,10 +226,10 @@ switch ($action) {
             if ($e->getCode() === '23000') {
                 echo json_encode(['status' => 'exists']);
             } else {
-                error_log('icecounter create: ' . $e->getMessage());
-                http_response_code(500);
-                echo json_encode(['status' => 'error']);
+                respondServerError('create', $e);
             }
+        } catch (Throwable $e) {
+            respondServerError('create', $e);
         }
         break;
     }
@@ -283,13 +320,11 @@ switch ($action) {
                 'timestamp' => $logRow ? formatLogTimestamp($logRow['created_at']) : null,
             ]);
 
-        } catch (PDOException $e) {
+        } catch (Throwable $e) {
             if (isset($pdo) && $pdo->inTransaction()) {
                 $pdo->rollBack();
             }
-            error_log('icecounter increment: ' . $e->getMessage());
-            http_response_code(500);
-            echo json_encode(['status' => 'error']);
+            respondServerError('increment', $e);
         }
         break;
     }
@@ -359,10 +394,8 @@ switch ($action) {
                 'logs' => $mapped,
             ]);
 
-        } catch (PDOException $e) {
-            error_log('icecounter list_logs: ' . $e->getMessage());
-            http_response_code(500);
-            echo json_encode(['status' => 'error']);
+        } catch (Throwable $e) {
+            respondServerError('list_logs', $e);
         }
         break;
     }

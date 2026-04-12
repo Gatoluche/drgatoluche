@@ -98,11 +98,33 @@ async function apiPost(action, data = {}) {
         body:        JSON.stringify({ action, ...data }),
     });
 
-    if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+    let parsed = null;
+    let rawText = '';
+
+    try {
+        rawText = await response.text();
+        parsed = rawText ? JSON.parse(rawText) : null;
+    } catch {
+        parsed = null;
     }
 
-    return response.json();
+    if (!response.ok) {
+        const detail = parsed?.debug?.error || parsed?.message || rawText || `HTTP ${response.status}`;
+        throw new Error(detail);
+    }
+
+    if (!parsed || typeof parsed !== 'object') {
+        throw new Error('Invalid API response payload.');
+    }
+
+    return parsed;
+}
+
+function getErrorMessage(error, fallback = 'Connection error. Please try again.') {
+    if (error instanceof Error && error.message) {
+        return error.message;
+    }
+    return fallback;
 }
 
 
@@ -323,8 +345,8 @@ async function loadLogs({ reset = false } = {}) {
         logsOffset += res.logs.length;
         logsHasMore = res.logs.length === LOGS_PAGE_SIZE;
         setLogsStatus(logsHasMore ? 'Scroll for more...' : 'End of log history.');
-    } catch {
-        setLogsStatus('Could not load logs.');
+    } catch (error) {
+        setLogsStatus(getErrorMessage(error, 'Could not load logs.'));
     } finally {
         logsLoading = false;
     }
@@ -375,8 +397,9 @@ async function tryAutoLogin() {
             deleteCookie(COOKIE_B);
             showLoginUI();
         }
-    } catch {
+    } catch (error) {
         // Network error — still show login so the user can retry
+        console.error('icecounter auto-login:', error);
         showLoginUI();
     }
 }
@@ -434,8 +457,9 @@ confirmBtn.addEventListener('click', async () => {
             default:
                 setLoginError('Unexpected server response. Please try again.');
         }
-    } catch {
-        setLoginError('Connection error. Please try again.');
+    } catch (error) {
+        console.error('icecounter login:', error);
+        setLoginError(getErrorMessage(error));
     } finally {
         confirmBtn.disabled = false;
     }
@@ -492,9 +516,10 @@ modalCreate.addEventListener('click', async () => {
                 modalOverlay.hidden = true;
                 setLoginError('Could not create account. Please try again.');
         }
-    } catch {
+    } catch (error) {
+        console.error('icecounter create:', error);
         modalOverlay.hidden = true;
-        setLoginError('Connection error. Please try again.');
+        setLoginError(getErrorMessage(error));
     } finally {
         modalCreate.disabled = false;
     }
@@ -580,8 +605,9 @@ async function increment(field) {
             default:
                 showToast('Something went wrong — try again.');
         }
-    } catch {
-        showToast('Connection error.');
+    } catch (error) {
+        console.error('icecounter increment:', error);
+        showToast(getErrorMessage(error, 'Connection error.'));
     }
 }
 
