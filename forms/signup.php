@@ -2,9 +2,14 @@
 
 include($_SERVER['DOCUMENT_ROOT'] . "/.backend/library.php");
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo("<meta http-equiv=\"refresh\" content=\"0; url=/failure.html\" />");
+    exit;
+}
+
 // Receive POST data.
-$name = $_POST['name'];
-$email = $_POST['email'];
+$name = trim((string) ($_POST['name'] ?? ''));
+$email = trim((string) ($_POST['email'] ?? ''));
 
 // Validate entered data.
 if (

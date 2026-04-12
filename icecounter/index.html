@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icecounter</title>
+    <link rel="stylesheet" href="../styles/icecounter.css">
+</head>
+<body>
+
+<!-- ─────────────────────────────────────────────────────────
+     SECTION: APP BOOT SCREEN
+     Visible during startup while the script checks cookies
+     and verifies login state with the API.
+     ─────────────────────────────────────────────────────── -->
+<div class="boot-screen" id="boot-screen" aria-live="polite">
+    <div class="boot-card glass-card">
+        <div class="boot-spinner"></div>
+        <p>Preparing your counter...</p>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SECTION: PAGE WRAPPER
+     All visible content lives inside this div so that the
+     animated background orbs (CSS pseudo-elements on body)
+     sit behind everything.
+     ═══════════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+
+
+    <!-- ─────────────────────────────────────────────────
+         SECTION: STATUS BAR
+         Shows the current sign-in state at the top.
+         The green dot pulses when a key pair is active.
+         ───────────────────────────────────────────────── -->
+    <header class="status-bar">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Not signed in</span>
+        <button class="sign-out-btn" id="sign-out-btn" hidden>Sign out</button>
+    </header>
+
+
+    <!-- ─────────────────────────────────────────────────
+         SECTION: MAIN COUNTER UI
+         Hidden until a key pair is confirmed.
+         Contains the two giant product buttons and the
+         running count beneath each one.
+         ───────────────────────────────────────────────── -->
+    <main class="counter-section" id="counter-section" hidden>
+
+        <div class="counters-row">
+
+            <!-- ── Monster Energy button ── -->
+            <div class="counter-card monster-card">
+                <button class="big-counter-btn monster-btn" id="btn-monster"
+                        aria-label="Tap to count a Monster Energy can">
+                    <img src="images/monster.png"
+                         alt="Monster Energy classic green can"
+                         class="product-img"
+                         onerror="this.style.display='none';
+                                  this.nextElementSibling.style.display='flex'">
+                    <div class="img-fallback monster-fallback">🥤<br>Monster</div>
+                </button>
+
+                <div class="count-display">
+                    <span class="count-label">Monster Cans</span>
+                    <span class="count-number monster-number" id="count-monster">0</span>
+                </div>
+            </div><!-- /monster-card -->
+
+
+            <!-- ── Breyers Ice Cream button ── -->
+            <div class="counter-card ice-card">
+                <button class="big-counter-btn ice-btn" id="btn-ice"
+                        aria-label="Tap to count a Breyers Cookies and Cream tub">
+                    <img src="images/icecream.png"
+                         alt="Breyers Cookies and Cream ice cream tub"
+                         class="product-img"
+                         onerror="this.style.display='none';
+                                  this.nextElementSibling.style.display='flex'">
+                    <div class="img-fallback ice-fallback">🍦<br>Ice Cream</div>
+                </button>
+
+                <div class="count-display">
+                    <span class="count-label">Ice Cream Tubs</span>
+                    <span class="count-number ice-number" id="count-ice">0</span>
+                </div>
+            </div><!-- /ice-card -->
+
+        </div><!-- /counters-row -->
+
+    </main><!-- /counter-section -->
+
+
+    <!-- ─────────────────────────────────────────────────
+         SECTION: SIGNED-IN ACTIVITY PANEL
+         Appears where the sign-in box sits once authenticated.
+         - Required description field for increments
+         - Infinite log list (loaded in pages)
+         ───────────────────────────────────────────────── -->
+    <section class="activity-panel" id="activity-panel" hidden>
+        <div class="activity-card glass-card">
+            <h2 class="activity-title">Jinx History</h2>
+            <p class="activity-subtitle">Write a note before tapping Monster or Ice Cream.</p>
+
+            <div class="description-wrap">
+                <label for="input-description">Description</label>
+                <input type="text"
+                       id="input-description"
+                       placeholder="Example: Post-lunch caffeine hit"
+                       maxlength="280"
+                       autocomplete="off">
+            </div>
+
+            <h3 class="logs-title">Recent Logs</h3>
+            <div class="logs-list" id="logs-list" aria-live="polite"></div>
+            <p class="logs-status" id="logs-status"></p>
+        </div>
+    </section><!-- /activity-panel -->
+
+
+    <!-- ─────────────────────────────────────────────────
+         SECTION: LOGIN PANEL
+         Always visible at the bottom unless signed in.
+         Two password inputs + a Confirm button.
+         On success → main UI is revealed.
+         If key pair not found → create-account modal opens.
+         ───────────────────────────────────────────────── -->
+    <section class="login-panel" id="login-panel">
+        <div class="login-card glass-card">
+
+            <h2 class="login-title">Sign In</h2>
+            <p class="login-subtitle">Enter your key pair to track your counts.</p>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="input-pa">Key A</label>
+                    <input type="text" id="input-pa"
+                           placeholder="Password A"
+                           autocomplete="off"
+                           maxlength="64">
+                </div>
+                <div class="input-group">
+                    <label for="input-pb">Key B</label>
+                    <input type="text" id="input-pb"
+                           placeholder="Password B"
+                           autocomplete="off"
+                           maxlength="64">
+                </div>
+            </div>
+
+            <button class="confirm-btn" id="confirm-btn">Confirm</button>
+            <p class="login-error" id="login-error" aria-live="polite"></p>
+
+        </div>
+    </section><!-- /login-panel -->
+
+
+    <!-- ─────────────────────────────────────────────────
+         SECTION: PAGE NOTE
+         Subtle editable text block for "What is this page?"
+         content. Keep this intentionally lightweight.
+         ───────────────────────────────────────────────── -->
+    <section class="page-note" aria-label="What is this page">
+        <p><b>Jinx! You owe me a... Monster Energy?</b></p>
+        <p>Some people do cokes, some people do beer.</p>
+        <p>But we do ice cream and Monster Energy.</p>
+        <p>In the future, I might add a feature to swap out the images.</p>
+        <p>But for now, here's a way to keep track of your debt from years of jinxes.</p>
+    </section><!-- /page-note -->
+
+
+</div><!-- /page-wrapper -->
+
+
+<!-- ─────────────────────────────────────────────────────────
+     SECTION: TOAST NOTIFICATION
+     Pops up briefly at the bottom of the screen after
+     each counter tap or sign-out action.
+     ─────────────────────────────────────────────────────── -->
+<div class="toast" id="toast" aria-live="polite"></div>
+
+
+<!-- ─────────────────────────────────────────────────────────
+     SECTION: CREATE-ACCOUNT MODAL
+     Shown when the key pair isn't found in the database.
+     User must explicitly confirm before an account is made.
+     ─────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal-overlay" hidden>
+    <div class="modal glass-card" role="dialog"
+         aria-modal="true" aria-labelledby="modal-heading">
+        <h3 id="modal-heading">New key pair</h3>
+        <p>This key pair doesn't exist yet.<br>Create a new account?</p>
+        <div class="modal-actions">
+            <button class="modal-btn cancel-btn" id="modal-cancel">Cancel</button>
+            <button class="modal-btn create-btn" id="modal-create">Create</button>
+        </div>
+    </div>
+</div>
+
+
+<script src="script.js"></script>
+</body>
+</html>
