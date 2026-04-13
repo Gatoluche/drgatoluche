@@ -1,62 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/navbar.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dr. Luche's Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/index.css">
 </head>
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3E4Q0YS6JE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-3E4Q0YS6JE');
-</script>
-
 <body>
-    <!-- Pikita -->
-    <image
-        style='
-            float: right;
-            margin: 0 100 0;
-            transform: rotate(-10deg);
-            max-width: 20%;'
-        src='pictures\pikita_x3.png'>
+  <div class="starfield" aria-hidden="true">
+    <div class="stars stars-far" data-star-layer="far"></div>
+    <div class="stars stars-mid" data-star-layer="mid"></div>
+    <div class="stars stars-near" data-star-layer="near"></div>
+    <div class="nebula nebula-one"></div>
+    <div class="nebula nebula-two"></div>
+  </div>
 
+  <img class="pikita-floater" src="pictures/pikita/pikita_x3.png" alt="" loading="lazy" aria-hidden="true">
 
+  <nav class="dot-nav" aria-label="Section navigation">
+    <a class="dot is-active" href="#hero" data-target="hero" aria-label="Hero"></a>
+    <a class="dot" href="#projects" data-target="projects" aria-label="Projects"></a>
+    <!--a class="dot" href="#about" data-target="about" aria-label="About me"></a-->
+    <a class="dot" href="#longread" data-target="longread" aria-label="Long read"></a>
+    <a class="dot" href="#contact" data-target="contact" aria-label="Contact"></a>
+  </nav>
 
-    <!-- Header is not ready for use yet.
-    <ul>
-        <li><a href="index.html">Inicio</a></li>
-    </ul>
-    -->
+  <main class="scroll-pages" id="scroll-pages">
+    <section class="page hero" id="hero" data-title="Home">
+      <p class="eyebrow">Dr. Luche's Lab</p>
+      <h1>Where metal and silicon turns into plushies.</h1>
+      <p class="lead">We convinced Pikita to stop eating the page. Now you can finally scroll through the lab's facilities.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#projects">Explore projects</a>
+        <a class="btn btn-ghost" href="#contact">Join updates</a>
+      </div>
+    </section>
 
+    <section class="page projects" id="projects" data-title="Projects">
+      <p class="eyebrow">Web projects</p>
+      <h2>Fresh from the assembly line</h2>
+      <div class="cards">
+        <a class="card" href="icecounter/index.html">
+          <h3>Jinx Counter</h3>
+          <p>Does your friend owe you one too many drinks? Show him you've never stopped keeping track.</p>
+          <p><i class="subtle-excerpt">Except it's not normal drinks, but ice cream and Monster energy.</i></p>
+          <span>View experiment</span>
+        </a>
+        <a class="card" href="pelutimer-v3/index.html">
+          <h3>PeluTimer 3.0</h3>
+          <p>Ever had issues tracking what you spend your time on?</p>
+          <p><i class="subtle-excerpt">It's a simple but customizable way to train your self-discipline.</i></p>
+          <span>Open 3.0</span>
+        </a>
+        <a class="card" href="archive/index.html">
+          <h3>Archive</h3>
+          <p>Venture into the heart of what makes the lab tick.</p>
+          <p><i class="subtle-excerpt">This was the bounty of an ARG I once worked on.</i></p>
+          <span>Brave past the vault doors.</span>
+        </a>
+      </div>
+    </section>
 
+    <!--section class="page about" id="about" data-title="About">
+      <p class="eyebrow">Statement</p>
+      <h2>Some header</h2>
+      <p class="about-copy">TODO: Put something here</p>
+    </section-->
 
-    <h1>
-        <span>
-            <span style="font-size:150%; font-weight: bold;">¡Vaya! </span>
-            <span style="font-size:80%">Parece que Pikita se ha comido la página.</span>
-        </span>
-    </h1>
+    <section class="page longread" id="longread" data-title="Long Read">
+      <p class="eyebrow">Breaking character</p>
+      <h2>When can I see the robot plushies?</h2>
+      <div class="longread-columns">
+        <p class="longread-highlight">This is essentially a portfolio site wearing a trench coat. Said trench coat is themed around the story of Dr. Luche and his robot lab assistant, Pikita. Someday, I'll make robotic plushies with my own hands. Until then, let this serve as a placeholder for this dream of mine.</p>
+        <p>A long time before the beginning of How to Build a Starship, a man known as Dr. Luche creates a lab assistant robot meant to break the mold of the sterile, uncanny machines we're used to. Instead, Pikita is built to be cute, endlessly silly and a bit of a troublemaker.</p>
+        <p>Early in his artificial life, though, Pikita's V.0 model with treaded legs falls down a flight of stairs and breaks. As he comes to inspect the noise, V.0 Pikita turns to him and apologizes for disappointing him before powering down. Despite knowing the robot wasn't anywhere near sentient, watching his innocent metal child die in his arms fills him with a resolve to make the next model <span class="cherenkov-inline" data-glow="absolutely indestructible.">absolutely indestructible.</span></p>
+        <p>As the version number increases, Dr. Luche delves into more and more outlandish projects that result in world-spanning technological breakthroughs.</p>
+        <p>The final version 5.0 is a self-improving nanomachine swarm surrounding a miniaturized fusion reactor, which renders its expressions on a plush-like surface by dynamically embroidering itself at ludicrous speeds.</p>
+        <p>Pikita's directive is to be infinitely silly. Children must grow out of naivete eventually and harden themselves against a cruel world. This invincible machine an never be destroyed, and as such he can allow himself to endlessly wander the universe with the curiosity of a baby and the bravery of a warmachine.</p>
+        <p>In the novel, Pikita is known as the mascot of the company but rarely makes direct appearances. However, his fate is intertwined with the destiny of the universe. One of the novel's overarching themes is the differentiation between man and machine, and sentient robots' quest to acquire what can be called a soul. And perhaps someday the <span class="cherenkov-inline" data-glow="Scion of the Star Age">Scion of the Star Age</span> will face that dilemma himself.</p>
+        <p>Does he who has achieved the truest form of silliness even need a soul? Or is there something beyond for him to discover, something only a man's irrational, selfish project could hope to achieve?</p>
+      </div>
+    </section>
 
-    <p style="color: rgb(173, 217, 255);">
-        Mientras tanto, puedes entregarle tu email para que te avise cuando esté lista.<br>
-        Es probable que se lo coma, pero al menos estará contento, no? <br>
-    </p>
+    <section class="page contact" id="contact" data-title="Contact">
+      <p class="eyebrow">Because he's been a good plushy</p>
+      <h2>You can still feed Pikita your email, if you want!</h2>
+      <form class="signup" action="forms/signup.php" method="post">
+        <input type="text" placeholder="Name" name="name" required>
+        <input type="email" placeholder="Email address" name="email" required>
+        <button type="submit">Notify me</button>
+      </form>
+      <p class="fineprint">By submitting the form, you accept our <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">terms and conditions</a>.</p>
+    </section>
+  </main>
 
-    
-    <form action="forms/signup.php" method="post">
-        <input type="text" placeholder="Nombre" name="name" required>
-        <input type="text" placeholder="Correo electrónico" name="email" required>
-        <input type="submit" value=":3">
-        <p style="font-size: 50%; color: gray; margin-left:0.5em">
-            Al hacer clic en el botón ':3' de arriba, aceptas nuestros
-            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">términos y condiciones</a>.</span>
-        </p>
-    </form>
+  <script src="scripts/index.js" defer></script>
 
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3E4Q0YS6JE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-3E4Q0YS6JE');
+  </script>
 </body>
+</html>
