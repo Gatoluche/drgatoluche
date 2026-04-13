@@ -29,6 +29,9 @@ if (pikitaFloater) {
   ];
   const peekPikitaImages = driftPikitaImages.filter((path) => !path.includes("pikita_sleep"));
   const spriteSourceCache = new Map();
+  const peekSqueak = new Audio("sounds/Squeak.ogg");
+  peekSqueak.preload = "auto";
+  peekSqueak.volume = 0.25;
 
   const randomBetween = (min, max) => Math.random() * (max - min) + min;
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -93,9 +96,20 @@ if (pikitaFloater) {
     // Trigger peek every few regular passes so it feels surprising, not constant.
     passesUntilPeek = Math.floor(randomBetween(4, 9));
   };
+  const playPeekSqueak = () => {
+    // Avoid stacking multiple squeaks if peek is re-triggered quickly.
+    peekSqueak.currentTime = 0;
+    const playPromise = peekSqueak.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {
+        // Ignore autoplay/device errors; animation should continue regardless.
+      });
+    }
+  };
 
   const runPeekEvent = () => {
     isPeekRunning = true;
+    playPeekSqueak();
 
     setPikitaSprite(pickNextPeekImage());
 
