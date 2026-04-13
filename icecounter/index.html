@@ -5,8 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Icecounter</title>
     <link rel="stylesheet" href="../styles/icecounter.css">
+    <link rel="stylesheet" href="../scripts/starfield.css">
+    <style>
+        :root {
+            --star-rotation-speed: 1;
+            --star-far-rotation-seconds: 820;
+            --star-mid-rotation-seconds: 680;
+            --star-near-rotation-seconds: 520;
+        }
+    </style>
 </head>
 <body>
+
+<div class="starfield" aria-hidden="true">
+    <div class="stars stars-far" data-star-layer="far"></div>
+    <div class="stars stars-mid" data-star-layer="mid"></div>
+    <div class="stars stars-near" data-star-layer="near"></div>
+</div>
 
 <!-- ─────────────────────────────────────────────────────────
      SECTION: APP BOOT SCREEN
@@ -200,6 +215,7 @@
 </div>
 
 
+<script src="../scripts/starfield.js" defer></script>
 <script src="script.js"></script>
 </body>
 </html>
