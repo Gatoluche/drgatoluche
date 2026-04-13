@@ -305,6 +305,99 @@ h2 {
   background: var(--surface-strong);
 }
 
+.cover-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, auto));
+  grid-auto-rows: 1fr;
+  gap: 1.2rem;
+  margin-top: 0.8rem;
+  justify-content: center;
+}
+
+.page.covers {
+  /* Approximate: X = 100% - 2Y, where Y is heading/eyebrow vertical footprint. */
+  --covers-heading-space: clamp(5.4rem, 13vh, 9.2rem);
+  --covers-band-height: calc(100vh - (2 * var(--covers-heading-space)));
+  align-content: stretch;
+  grid-template-rows: auto minmax(0, var(--covers-band-height));
+  gap: 0.1vw;
+  width: 96vw;
+}
+
+.covers-heading {
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.page.covers .cover-cards {
+  height: 100%;
+  margin-top: 0.45rem;
+}
+
+.cover-card {
+  text-decoration: none;
+  color: var(--text-main);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 1rem;
+  backdrop-filter: blur(9px);
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  min-height: 0;
+  height: 100%;
+  align-items: start;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  width:fit-content;
+}
+
+.cover-card:hover,
+.cover-card:focus-within,
+.cover-card:focus-visible {
+  transform: translateY(-4px);
+  border-color: rgba(149, 224, 255, 0.75);
+  background: var(--surface-strong);
+}
+
+.cover-card-image {
+  width: auto;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(161, 216, 255, 0.16);
+  background: rgba(3, 10, 20, 0.44);
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.cover-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-width: 0;
+  width: auto;
+  flex-shrink: 0;
+  height: 100%;
+}
+.cover-card-body h3 {
+
+}
+
+.cover-card-body p {
+  margin: 0;
+  width:15rem;
+  color: var(--text-soft);
+  line-height: 1.45;
+}
+
+.cover-card-body span {
+  margin-top: auto;
+  align-self: flex-end;
+  color: var(--accent-soft);
+}
+
 .signup {
   /* Form layout wraps naturally on narrower screens. */
   display: flex;
@@ -566,6 +659,10 @@ h2 {
     grid-template-columns: 1fr;
   }
 
+  .cover-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .dot-nav {
     right: 0.55rem;
   }
@@ -607,6 +704,10 @@ h2 {
   .signup input,
   .signup button {
     width: 100%;
+  }
+
+  .cover-cards {
+    grid-template-columns: 1fr;
   }
 
   .longread-columns {
