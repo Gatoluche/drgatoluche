@@ -1,0 +1,138 @@
+/*
+  Starfield module — rotating star layers and drifting nebula clouds.
+  Depends on --star-canvas-size, --star-pivot-x, --star-pivot-y injected by starfield.js,
+  and --star-rotation-speed, --star-far/mid/near-rotation-seconds from index.css.
+*/
+
+.starfield {
+  /* Fixed viewport-sized wrapper for the background layers. */
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.stars,
+.nebula {
+  /* Shared absolute positioning for all background effect layers. */
+  position: absolute;
+  will-change: transform, opacity;
+}
+
+.stars {
+  /*
+    Star canvas dimensions are injected by JS so the square is only as large
+    as needed for the current viewport and rotation pivot.
+  */
+  width: var(--star-canvas-size, 200vmax);
+  height: var(--star-canvas-size, 200vmax);
+  left: var(--star-pivot-x, 50vw);
+  top: var(--star-pivot-y, 138vh);
+  margin-left: calc(var(--star-canvas-size, 200vmax) / -2);
+  margin-top: calc(var(--star-canvas-size, 200vmax) / -2);
+  background-repeat: repeat;
+  transform: translate3d(0, 0, 0);
+  /* Rotate around the square center; JS places that center below the viewport. */
+  transform-origin: 50% 50%;
+}
+
+.nebula {
+  inset: -18%;
+  /* Screen blend brightens overlapping color without muddying the sky. */
+  mix-blend-mode: screen;
+}
+
+/* Far stars: tiny points, denser pattern, subtle twinkle. */
+.stars-far {
+  background-image:
+    radial-gradient(1px 1px at 26px 34px, rgba(255, 255, 255, 0.82), transparent),
+    radial-gradient(1px 1px at 132px 78px, rgba(206, 232, 255, 0.76), transparent),
+    radial-gradient(1px 1px at 74px 146px, rgba(255, 255, 255, 0.86), transparent),
+    radial-gradient(1px 1px at 196px 198px, rgba(190, 222, 255, 0.62), transparent);
+  background-size: 230px 230px;
+  opacity: 0.72;
+  animation:
+    twinkle 7.5s ease-in-out infinite alternate,
+    starRotateCCW calc(var(--star-far-rotation-seconds) / var(--star-rotation-speed) * 1s) linear infinite;
+}
+
+/* Mid stars: slightly brighter and larger than far layer. */
+.stars-mid {
+  background-image:
+    radial-gradient(1.4px 1.4px at 42px 60px, rgba(255, 255, 255, 0.95), transparent),
+    radial-gradient(1.4px 1.4px at 170px 112px, rgba(194, 232, 255, 0.9), transparent),
+    radial-gradient(1.4px 1.4px at 96px 182px, rgba(255, 255, 255, 0.92), transparent);
+  background-size: 276px 276px;
+  opacity: 0.62;
+  animation:
+    twinkle 9.8s ease-in-out infinite alternate-reverse,
+    starRotateCCW calc(var(--star-mid-rotation-seconds) / var(--star-rotation-speed) * 1s) linear infinite;
+}
+
+/* Near stars: largest points with a small glow for depth. */
+.stars-near {
+  background-image:
+    radial-gradient(1.9px 1.9px at 82px 54px, rgba(255, 255, 255, 1), transparent),
+    radial-gradient(1.9px 1.9px at 210px 168px, rgba(228, 244, 255, 0.96), transparent),
+    radial-gradient(2px 2px at 144px 238px, rgba(255, 255, 255, 0.96), transparent);
+  background-size: 340px 340px;
+  opacity: 0.52;
+  animation:
+    twinkle 12s ease-in-out infinite alternate,
+    starRotateCCW calc(var(--star-near-rotation-seconds) / var(--star-rotation-speed) * 1s) linear infinite;
+  filter: drop-shadow(0 0 3px rgba(185, 224, 255, 0.35));
+}
+
+/* Soft color clouds that slowly drift for atmospheric motion. */
+.nebula-one {
+  background: radial-gradient(55% 45% at 76% 22%, rgba(58, 144, 255, 0.2), transparent 70%);
+  animation: nebulaDrift 26s ease-in-out infinite;
+}
+
+.nebula-two {
+  background: radial-gradient(48% 40% at 18% 76%, rgba(113, 102, 255, 0.16), transparent 72%);
+  animation: nebulaDrift 30s ease-in-out infinite reverse;
+}
+
+@keyframes twinkle {
+  /* Small opacity oscillation keeps stars alive but not distracting. */
+  0% {
+    opacity: 0.42;
+  }
+  50% {
+    opacity: 0.88;
+  }
+  100% {
+    opacity: 0.54;
+  }
+}
+
+@keyframes starRotateCCW {
+  /* Perfect loop: same tiled texture rotated a full turn counter-clockwise. */
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-360deg);
+  }
+}
+
+@keyframes nebulaDrift {
+  /* Slow drift/scale loop gives nebula layers gentle movement. */
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(18px, -12px, 0) scale(1.03);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@media (max-width: 640px) {
+  .nebula {
+    inset: -28%;
+  }
+}
