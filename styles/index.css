@@ -551,11 +551,3 @@ h2 {
     column-width: auto;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .cherenkov-inline,
-  .cherenkov-inline::before,
-  .cherenkov-inline::after {
-    animation: none;
-  }
-}

@@ -1,9 +1,8 @@
 // Pikita floater module — animated sprite that drifts across the viewport and occasionally
 // zooms in for a comedic close-up peek at the viewer.
 const pikitaFloater = document.querySelector(".pikita-floater");
-const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-if (pikitaFloater && !reducedMotionQuery.matches) {
+if (pikitaFloater) {
   // Drift speed multiplier for testing longevity.
   // 1 = current timing range, 2 = twice as fast, 0.5 = half speed.
   const driftDurationMultiplier = 1;
