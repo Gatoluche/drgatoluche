@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Pikita Screensaver</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="styles/index.css">
+	<link rel="stylesheet" href="scripts/starfield.css">
+	<link rel="stylesheet" href="scripts/pikita.css">
+</head>
+<body>
+	<div class="starfield" aria-hidden="true">
+		<div class="stars stars-far" data-star-layer="far"></div>
+		<div class="stars stars-mid" data-star-layer="mid"></div>
+		<div class="stars stars-near" data-star-layer="near"></div>
+		<div class="nebula nebula-one"></div>
+		<div class="nebula nebula-two"></div>
+	</div>
+
+	<img class="pikita-floater" src="pictures/pikita/pikita_x3.png" alt="" loading="lazy" aria-hidden="true">
+
+	<script src="scripts/starfield.js" defer></script>
+	<script src="scripts/pikita.js" defer></script>
+</body>
+</html>
